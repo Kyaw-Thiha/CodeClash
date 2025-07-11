@@ -22,7 +22,8 @@ To run the game,
 ```
 
 ## Main Place to Code
-Edit the code in `bot/starter_code/python/bot.py` inside the `choose_move()` function
+- Edit the code in `bot/starter_code/python/bot.py` inside the `choose_move()` function
+- The bot.py must output (row, col) as output. That is the only requirement.
 
 
 ## Simon Strategies
