@@ -1,4 +1,7 @@
 # Documentation 
+- We are playing on 10x10 board.
+- We win if we have 5 consecutive on row, column or diagonal.
+
 ## GUI
 To run the game, 
 - in Linux, go into `server`, and run
