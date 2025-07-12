@@ -237,48 +237,80 @@ def find_extension_spot(line: Line, board: List[List[str]]) -> tuple[int, int] |
 
     return None  # No extension possible
 
-def find_merging_spot(player_lines: List[Line], board: List[List[str]]) -> tuple[int, int] | None:
-    for i in range(len(player_lines)):
-        for j in range(i + 1, len(player_lines)):
-            line1 = player_lines[i]
-            line2 = player_lines[j]
+# def find_merging_spot(player_lines: List[Line], board: List[List[str]]) -> tuple[int, int] | None:
+#     for i in range(len(player_lines)):
+#         for j in range(i + 1, len(player_lines)):
+#             line1 = player_lines[i]
+#             line2 = player_lines[j]
+#
+#             # Only consider lines with 2 pieces
+#             if line1.num_pieces + line2.num_pieces != 4:
+#                 continue
+#
+#             # Check if both lines have same direction
+#             dx1 = line1.positions[-1].x - line1.positions[0].x
+#             dy1 = line1.positions[-1].y - line1.positions[0].y
+#             if len(line1.positions) > 1:
+#                 dx1 //= len(line1.positions) - 1
+#                 dy1 //= len(line1.positions) - 1
+#
+#             dx2 = line2.positions[-1].x - line2.positions[0].x
+#             dy2 = line2.positions[-1].y - line2.positions[0].y
+#             if len(line2.positions) > 1:
+#                 dx2 //= len(line2.positions) - 1
+#                 dy2 //= len(line2.positions) - 1
+#
+#             if dx1 != dx2 or dy1 != dy2:
+#                 continue  # Not aligned
+#
+#             # Check distance and intermediate empty spot
+#             ends = [line1.positions[0], line1.positions[-1], line2.positions[0], line2.positions[-1]]
+#             ends.sort(key=lambda p: (p.x, p.y))  # Sort for consistency
+#
+#             # Consider one of the middle gaps
+#             for a in ends:
+#                 for b in ends:
+#                     if a == b:
+#                         continue
+#                     gap_x = (a.x + b.x) // 2
+#                     gap_y = (a.y + b.y) // 2
+#                     if 0 <= gap_x < SIZE and 0 <= gap_y < SIZE and board[gap_y][gap_x] == '':
+#                         # Check if the gap is between the two lines
+#                         if abs(a.x - b.x) <= 4 and abs(a.y - b.y) <= 4:
+#                             return (gap_y, gap_x)
+#     return None
 
-            # Only consider lines with 2 pieces
-            if line1.num_pieces + line2.num_pieces != 4:
-                continue
+def find_bridge_to_win(board: List[List[str]], player: str) -> tuple[int, int] | None:
+    directions = [(1, 0), (0, 1), (1, 1), (-1, 1)]  # H, V, D1, D2
 
-            # Check if both lines have same direction
-            dx1 = line1.positions[-1].x - line1.positions[0].x
-            dy1 = line1.positions[-1].y - line1.positions[0].y
-            if len(line1.positions) > 1:
-                dx1 //= len(line1.positions) - 1
-                dy1 //= len(line1.positions) - 1
-
-            dx2 = line2.positions[-1].x - line2.positions[0].x
-            dy2 = line2.positions[-1].y - line2.positions[0].y
-            if len(line2.positions) > 1:
-                dx2 //= len(line2.positions) - 1
-                dy2 //= len(line2.positions) - 1
-
-            if dx1 != dx2 or dy1 != dy2:
-                continue  # Not aligned
-
-            # Check distance and intermediate empty spot
-            ends = [line1.positions[0], line1.positions[-1], line2.positions[0], line2.positions[-1]]
-            ends.sort(key=lambda p: (p.x, p.y))  # Sort for consistency
-
-            # Consider one of the middle gaps
-            for a in ends:
-                for b in ends:
-                    if a == b:
-                        continue
-                    gap_x = (a.x + b.x) // 2
-                    gap_y = (a.y + b.y) // 2
-                    if 0 <= gap_x < SIZE and 0 <= gap_y < SIZE and board[gap_y][gap_x] == '':
-                        # Check if the gap is between the two lines
-                        if abs(a.x - b.x) <= 4 and abs(a.y - b.y) <= 4:
-                            return (gap_y, gap_x)
+    for y in range(SIZE):
+        for x in range(SIZE):
+            for dx, dy in directions:
+                positions = [(x + i*dx, y + i*dy) for i in range(5)]
+                if all(0 <= px < SIZE and 0 <= py < SIZE for px, py in positions):
+                    values = [board[py][px] for px, py in positions]
+                    # Match pattern: player, player, player, "", player
+                    if values.count(player) == 4 and values.count('') == 1:
+                        empty_index = values.index('')
+                        empty_pos = positions[empty_index]
+                        # Extra safety: check sides aren't both blocked
+                        before = (x - dx, y - dy)
+                        after = (x + 5*dx, y + 5*dy)
+                        sides_blocked = 0
+                        if 0 <= before[0] < SIZE and 0 <= before[1] < SIZE:
+                            if board[before[1]][before[0]] not in ['', player]:
+                                sides_blocked += 1
+                        else:
+                            sides_blocked += 1
+                        if 0 <= after[0] < SIZE and 0 <= after[1] < SIZE:
+                            if board[after[1]][after[0]] not in ['', player]:
+                                sides_blocked += 1
+                        else:
+                            sides_blocked += 1
+                        if sides_blocked < 2:
+                            return (empty_pos[1], empty_pos[0])  # (row, col)
     return None
+
 
 def choose_move(board, player):
     valid = get_valid_moves(board)
@@ -296,9 +328,12 @@ def choose_move(board, player):
                 return move
     
     # 1.5 Try to merge two lines to form a win
-    merge_move = find_merging_spot(player_lines, board)
-    if merge_move:
-        return merge_move
+    bridge = find_bridge_to_win(board, player)
+    if bridge:
+        return bridge
+    # merge_move = find_merging_spot(player_lines, board)
+    # if merge_move:
+    #     return merge_move
 
     # 2. Block enemy win
     for line in enemy_lines:
