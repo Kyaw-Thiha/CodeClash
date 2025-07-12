@@ -8,9 +8,9 @@ from stable_baselines3.common.results_plotter import ts2xy
 from env import CustomChessEnv
 
 
-def evaluate():
+def evaluate(time_steps: int):
     # Reload the saved model
-    model = PPO.load("chess_model")
+    model = PPO.load(f"chess_model_{time_steps}")
     env = CustomChessEnv()
 
     # Evaluate with deterministic policy
@@ -33,4 +33,3 @@ def plot_rewards(log_dir):
 
 if __name__ == "__main__":
     plot_rewards("./tensorboard_logs")
-    evaluate()
