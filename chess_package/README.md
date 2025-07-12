@@ -56,4 +56,5 @@ The main places to write code are `setup_phase()` and `play_phase()` inside `/bo
 * **`blockedTiles`**: Coordinates unavailable during setup.
 
 ## Links
-[https://docs.pytorch.org/tutorials/intermediate/reinforcement_q_learning.html](https://docs.pytorch.org/tutorials/intermediate/reinforcement_q_learning.html)
+- [https://docs.pytorch.org/tutorials/intermediate/reinforcement_q_learning.html](https://docs.pytorch.org/tutorials/intermediate/reinforcement_q_learning.html)
+- Minimax Algorithm
