@@ -237,6 +237,48 @@ def find_extension_spot(line: Line, board: List[List[str]]) -> tuple[int, int] |
 
     return None  # No extension possible
 
+def find_merging_spot(player_lines: List[Line], board: List[List[str]]) -> tuple[int, int] | None:
+    for i in range(len(player_lines)):
+        for j in range(i + 1, len(player_lines)):
+            line1 = player_lines[i]
+            line2 = player_lines[j]
+
+            # Only consider lines with 2 pieces
+            if line1.num_pieces + line2.num_pieces != 4:
+                continue
+
+            # Check if both lines have same direction
+            dx1 = line1.positions[-1].x - line1.positions[0].x
+            dy1 = line1.positions[-1].y - line1.positions[0].y
+            if len(line1.positions) > 1:
+                dx1 //= len(line1.positions) - 1
+                dy1 //= len(line1.positions) - 1
+
+            dx2 = line2.positions[-1].x - line2.positions[0].x
+            dy2 = line2.positions[-1].y - line2.positions[0].y
+            if len(line2.positions) > 1:
+                dx2 //= len(line2.positions) - 1
+                dy2 //= len(line2.positions) - 1
+
+            if dx1 != dx2 or dy1 != dy2:
+                continue  # Not aligned
+
+            # Check distance and intermediate empty spot
+            ends = [line1.positions[0], line1.positions[-1], line2.positions[0], line2.positions[-1]]
+            ends.sort(key=lambda p: (p.x, p.y))  # Sort for consistency
+
+            # Consider one of the middle gaps
+            for a in ends:
+                for b in ends:
+                    if a == b:
+                        continue
+                    gap_x = (a.x + b.x) // 2
+                    gap_y = (a.y + b.y) // 2
+                    if 0 <= gap_x < SIZE and 0 <= gap_y < SIZE and board[gap_y][gap_x] == '':
+                        # Check if the gap is between the two lines
+                        if abs(a.x - b.x) <= 4 and abs(a.y - b.y) <= 4:
+                            return (gap_y, gap_x)
+    return None
 
 def choose_move(board, player):
     valid = get_valid_moves(board)
@@ -252,6 +294,11 @@ def choose_move(board, player):
             move = find_extension_spot(line, board)
             if move:
                 return move
+    
+    # 1.5 Try to merge two lines to form a win
+    merge_move = find_merging_spot(player_lines, board)
+    if merge_move:
+        return merge_move
 
     # 2. Block enemy win
     for line in enemy_lines:
