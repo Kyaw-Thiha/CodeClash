@@ -88,19 +88,21 @@ def getLineH(piece: Position, board: List[List[str]]) -> Line:
     count: int
     result: Line
     result = Line(1, 0, [piece])
-    current = board[piece.x][piece.y]
-    if(piece.x != 0 and board[piece.x - 1][piece.y] == current):
+    current = board[piece.y][piece.x]
+    if(piece.x != 0 and board[piece.y][piece.x - 1] == current):
         return Line(-1, -1, [])
 
     count = 1
-    while(piece.x + count < SIZE and board[piece.x + count][piece.y] == current):
+    while(piece.x + count < SIZE and board[piece.y][piece.x + count] == current):
         result.positions.append(Position(piece.x + count, piece.y))
         count += 1
 
-    if(piece.x == 0 or board[piece.x - 1][piece.y] != ''):
+    if(piece.x == 0 or board[piece.y][piece.x - 1] != ''):
         result.sides_blocked += 1
-    if(piece.x + count >= SIZE - 1 or board[piece.x + count + 1][piece.y] != ''):
+    if(piece.x + count >= SIZE - 1 or board[piece.y][piece.x + count + 1] != ''):
         result.sides_blocked += 1
+
+        result.num_pieces = count
 
     return result
 
@@ -111,20 +113,22 @@ def getLineV(piece: Position, board: List[List[str]]) -> Line:
     count: int
     result: Line
     result = Line(1, 0, [piece])
-    current = board[piece.x][piece.y]
-    if(piece.y != 0 and board[piece.x][piece.y - 1] == current):
+    current = board[piece.y][piece.x]
+    if(piece.y != 0 and board[piece.y - 1][piece.x] == current):
         return Line(-1, -1, [])
 
     count = 1
-    while(piece.y + count < SIZE and board[piece.x][piece.y + count] == current):
+    while(piece.y + count < SIZE and board[piece.y + count][piece.x] == current):
         result.positions.append(Position(piece.x, piece.y + count))
         count += 1
 
-    if(piece.y == 0 or board[piece.x][piece.y - 1] != ''):
+    if(piece.y == 0 or board[piece.y - 1][piece.x] != ''):
         result.sides_blocked += 1
-    if(piece.y + count >= SIZE - 1 or board[piece.x][piece.y + count + 1] != ''):
+    if(piece.y + count >= SIZE - 1 or board[piece.y + count + 1][piece.x] != ''):
         result.sides_blocked += 1
-    
+
+    result.num_pieces = count
+
     return result
 
 def getLineD1(piece: Position, board: List[List[str]]) -> Line:
@@ -134,22 +138,23 @@ def getLineD1(piece: Position, board: List[List[str]]) -> Line:
     count: int
     result: Line
     result = Line(1, 0, [piece])
-    current = board[piece.x][piece.y]
-    if(piece.x != 0 and piece.y != 0 and board[piece.x - 1][piece.y - 1] == current):
+    current = board[piece.y][piece.x]
+    if(piece.x != 0 and piece.y != 0 and board[piece.y - 1][piece.x - 1] == current):
         return Line(-1, -1, [])
 
     count = 1
-    while(piece.x + count < SIZE and piece.y + count < SIZE and board[piece.x + count][piece.y + count] == current):
+    while(piece.x + count < SIZE and piece.y + count < SIZE and board[piece.y + count][piece.x + count] == current):
         result.positions.append(Position(piece.x + count, piece.y + count))
         count += 1
 
-    if(piece.x == 0 or piece.y == 0 or board[piece.x - 1][piece.y - 1] != ''):
+    if(piece.x == 0 or piece.y == 0 or board[piece.y - 1][piece.x - 1] != ''):
         result.sides_blocked += 1
-    if(piece.x + count >= SIZE - 1 or piece.y + count >= SIZE - 1 or board[piece.x + count + 1][piece.y + count + 1] != ''):
+    if(piece.x + count >= SIZE - 1 or piece.y + count >= SIZE - 1 or board[piece.y + count + 1][piece.x + count + 1] != ''):
         result.sides_blocked += 1
-    
-    return result
 
+    result.num_pieces = count
+
+    return result
 
 def getLineD2(piece: Position, board: List[List[str]]) -> Line:
     # Simon's function
@@ -158,23 +163,25 @@ def getLineD2(piece: Position, board: List[List[str]]) -> Line:
     count: int
     result: Line
     result = Line(1, 0, [piece])
-    current = board[piece.x][piece.y]
-    
-    if(piece.x != SIZE - 1 and piece.y != 0 and board[piece.x + 1][piece.y - 1] == current):
+    current = board[piece.y][piece.x]
+
+    # Not bottom-leftmost
+    if(piece.x != SIZE - 1 and piece.y != 0 and board[piece.y - 1][piece.x + 1] == current):
         return Line(-1, -1, [])
 
     count = 1
-    while(piece.x - count >= 0 and piece.y + count < SIZE and board[piece.x - count][piece.y + count] == current):
+    while(piece.x - count >= 0 and piece.y + count < SIZE and board[piece.y + count][piece.x - count] == current):
         result.positions.append(Position(piece.x - count, piece.y + count))
         count += 1
 
-    if(piece.x == SIZE - 1 or piece.y == 0 or board[piece.x + 1][piece.y - 1] != ''):
+    if(piece.x == SIZE - 1 or piece.y == 0 or board[piece.y - 1][piece.x + 1] != ''):
         result.sides_blocked += 1
-    if(piece.x - count - 1 < 0 or piece.y + count + 1 >= SIZE or board[piece.x - count - 1][piece.y + count + 1] != ''):
+    if(piece.x - count - 1 < 0 or piece.y + count + 1 >= SIZE or board[piece.y + count + 1][piece.x - count - 1] != ''):
         result.sides_blocked += 1
 
+    result.num_pieces = count
+    
     return result
-
 
 def get_all_lines(board: List[List[str]], player: str) -> List[Line]:
     # Simon's function
@@ -183,6 +190,7 @@ def get_all_lines(board: List[List[str]], player: str) -> List[Line]:
 
     # First get all pieces of our own's position
     lines: List[Line]
+    tempLine: Line
     pieces: List[Position]
 
     lines = []
@@ -191,15 +199,23 @@ def get_all_lines(board: List[List[str]], player: str) -> List[Line]:
     for i in range(SIZE):
         for j in range(SIZE):
             if board[i][j] == player:
-                pieces.append(Position(i,j))
+                pieces.append(Position(j,i))
 
     # Then, for every single pieces on the board, check if it has a line
     for piece in pieces:
-        # Get the horizontal, vertical, diagonal lines
-        pass
-    pass
-
-    return []
+        tempLine = getLineH(piece, board)
+        if tempLine.positions != []:
+            lines.append(tempLine)
+        tempLine = getLineV(piece, board)
+        if tempLine.positions != []:
+            lines.append(tempLine)
+        tempLine = getLineD1(piece, board)
+        if tempLine.positions != []:
+            lines.append(tempLine)
+        tempLine = getLineD2(piece, board)
+        if tempLine.positions != []:
+            lines.append(tempLine)
+    return lines 
 
 
 # ____________________preexisted functions____________________
@@ -212,6 +228,13 @@ def choose_move(board, player):
     valid = get_valid_moves(board)
     if not valid:
         raise Exception("No valid moves available")
+
+    lines: List[Line]
+    lines = get_all_lines(board, player)
+    for line in lines:
+        print(line)
+
+    
     # Example stub: always pick the first one
     return valid[0]
 
