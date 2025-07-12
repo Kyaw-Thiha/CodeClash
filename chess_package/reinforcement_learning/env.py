@@ -155,7 +155,8 @@ class CustomChessEnv(gym.Env):
             if target.type == "K":
                 reward += 0.9  # strong bonus for killing king
 
-        self.board[to_r][to_c] = piece
+        # self.board[to_r][to_c] = piece
+        self.board[to_r][to_c] = Piece(piece.type, piece.color, piece.shielded)
         self.board[fr_r][fr_c] = None
 
         if piece.type == "P" and (to_r == 0 if piece.color == "black" else to_r == 4):

@@ -3,16 +3,25 @@ from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.monitor import Monitor
 from env import CustomChessEnv
 from sb3_contrib.ppo_mask import MaskablePPO
+from sb3_contrib.common.wrappers import ActionMasker
 
 
 def train(time_steps: int):
     print("Loading the environment")
+
+    def mask_fn(env):
+        return env.unwrapped.get_action_mask()
+
     env = CustomChessEnv(sophisticated_rewards=True)
     check_env(env, warn=True)
     env = Monitor(env, filename="./tensorboard_logs/")
+
+    env = ActionMasker(env, mask_fn)
+
     print("Finished loading the environment")
 
     print("Training the model")
+
     model = MaskablePPO(
         "MlpPolicy", env, verbose=1, tensorboard_log="./tensorboard_logs"
     )
