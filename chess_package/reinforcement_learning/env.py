@@ -318,6 +318,11 @@ class CustomChessEnv(gym.Env):
 
         return obs
 
+    def change_turn(self, turn: str = "White", turn_counter: int = 0):
+        self.turn = turn
+        self.turn_counter = turn_counter
+        return self._get_obs()
+
     def set_board(
         self,
         board: List[List[Optional[Piece]]],

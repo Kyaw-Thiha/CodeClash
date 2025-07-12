@@ -79,7 +79,32 @@ def load_model(
     action, _ = model.predict(obs, action_masks=mask, deterministic=True)
     move = raw_env.mapper.decode(int(action))
 
-    return move
+    prev_move = None
+    while is_ability_action(move):
+        # If it is ability action, we need to keep running the model to get movement
+        prev_move = move
+
+        env.step(int(action))
+        obs = raw_env.change_turn(turn=turn, turn_counter=turn_counter)
+
+        action, _ = model.predict(obs, action_masks=mask, deterministic=True)
+        move = raw_env.mapper.decode(int(action))
+
+    return combine_move_and_ability(move, prev_move)
+
+
+def is_ability_action(decoded_action):
+    (from_pos, to_pos, ability) = decoded_action
+    return from_pos == (-1, -1) and to_pos == (-1, -1) and ability is not None
+
+
+def combine_move_and_ability(move_action, ability_action):
+    if ability_action is None:
+        return move_action
+
+    (from_pos, to_pos, _) = move_action
+    (_, _, ability_dict) = ability_action
+    return Move(from_pos=from_pos, to_pos=to_pos, ability=ability_dict)
 
 
 def json_to_set_board_params(data):
@@ -261,7 +286,10 @@ def play_phase(state: Dict[str, Any]) -> Dict[str, Any]:
     }
     """
     game_state = json_to_set_board_params(state)
+
     move = load_model(**game_state)
+    # from = list(move.from_pos)
+
     result_json = move_to_json(move)
 
     return result_json
