@@ -57,7 +57,7 @@ custom_board[1][3] = Piece("P", "black")
 custom_board[1][4] = Piece("B", "black")
 
 raw_env = get_raw_env(env)
-obs = raw_env.set_board(custom_board, turn="white", is_first_turn=True)
+obs = raw_env.set_board(custom_board, turn="white")
 print(obs)
 
 # 4. Get observation from env

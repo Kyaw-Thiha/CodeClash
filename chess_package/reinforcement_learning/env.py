@@ -9,7 +9,7 @@ from game_representation import Piece, GameState, Move, ActionMapper
 from game_mechanics import get_legal_moves
 
 import random
-from typing import Any, Optional, List
+from typing import Any, Optional, List, Dict, Tuple
 
 
 # def _place_pieces(self):
@@ -322,32 +322,60 @@ class CustomChessEnv(gym.Env):
         self,
         board: List[List[Optional[Piece]]],
         turn: str = "white",
-        is_first_turn: bool = False,
+        turn_counter: int = 0,
+        fog_turns: Optional[Dict[str, int]] = None,
+        abilities_remaining: Optional[Dict[str, Dict[str, bool]]] = None,
+        pawn_starts: Optional[Dict[str, List[Tuple[int, int]]]] = None,
+        done: bool = False,
+        winner: Optional[str] = None,
     ):
         """
-        Replace the current board with a custom board state.
-        Assumes board is a 5x5 list of Piece or None.
+        Replace the current board with a custom game state.
         """
         self.board = board
         self.turn = turn
-        self.done = False
-        self.winner = None
-        self.turn_counter = 0
-        self.fog_turns = {"white": 0, "black": 0}
-        self.abilities_remaining = {
+        self.turn_counter = turn_counter
+        self.fog_turns = fog_turns or {"white": 0, "black": 0}
+        self.abilities_remaining = abilities_remaining or {
             "white": {"fog": True, "pawnReset": True, "shield": True},
             "black": {"fog": True, "pawnReset": True, "shield": True},
         }
-        self.pawn_starts = {"white": [], "black": []}
+        self.pawn_starts = pawn_starts or {"white": [], "black": []}
+        self.done = done
+        self.winner = winner
 
-        if is_first_turn:
-            # Re-calculate pawn start positions
-            for r in range(5):
-                for c in range(5):
-                    p = board[r][c]
-                    if p and p.type == "P":
-                        self.pawn_starts[p.color].append((r, c))
         return self._get_obs()
+
+    # def set_board(
+    #     self,
+    #     board: List[List[Optional[Piece]]],
+    #     turn: str = "white",
+    #     is_first_turn: bool = False,
+    # ):
+    #     """
+    #     Replace the current board with a custom board state.
+    #     Assumes board is a 5x5 list of Piece or None.
+    #     """
+    #     self.board = board
+    #     self.turn = turn
+    #     self.done = False
+    #     self.winner = None
+    #     self.turn_counter = 0
+    #     self.fog_turns = {"white": 0, "black": 0}
+    #     self.abilities_remaining = {
+    #         "white": {"fog": True, "pawnReset": True, "shield": True},
+    #         "black": {"fog": True, "pawnReset": True, "shield": True},
+    #     }
+    #     self.pawn_starts = {"white": [], "black": []}
+    #
+    #     if is_first_turn:
+    #         # Re-calculate pawn start positions
+    #         for r in range(5):
+    #             for c in range(5):
+    #                 p = board[r][c]
+    #                 if p and p.type == "P":
+    #                     self.pawn_starts[p.color].append((r, c))
+    #     return self._get_obs()
 
     def get_action_mask(self) -> np.ndarray:
         num_actions = len(self.mapper.index_to_action)
