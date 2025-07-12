@@ -7,7 +7,7 @@
 
 ## Abilities
 Note that we can enable only 1 ability per turn.
-- Fog: Opponent see only 3 of opponent unit??? (<-- Need to double-check)
+- Fog: Opponent only see the player units in movement tiles of the opponents' unit. Last 3 turns.
 - Pawn Reset: Reset the pawns to their original position
 - Prevent a specific piece from being killed for this turn
 
