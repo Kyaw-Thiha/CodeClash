@@ -58,5 +58,9 @@ The main places to write code are `setup_phase()` and `play_phase()` inside `/bo
 ## Links
 - [https://docs.pytorch.org/tutorials/intermediate/reinforcement_q_learning.html](https://docs.pytorch.org/tutorials/intermediate/reinforcement_q_learning.html)
 - [Gymnasium](https://gymnasium.farama.org/)
-- [Gymnasimu Github](https://github.com/Farama-Foundation/Gymnasium?tab=readme-ov-file)
+- [Gymnasium Github](https://github.com/Farama-Foundation/Gymnasium?tab=readme-ov-file)
 - Minimax Algorithm
+
+## Feedback
+- Model might be overfitting
+- Need to give reward for long-term moves

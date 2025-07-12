@@ -24,12 +24,12 @@ def train(time_steps: int):
 
     print("Training the model")
 
-    # model = MaskablePPO(
-    #     "MlpPolicy", env, verbose=1, tensorboard_log="./tensorboard_logs"
-    # )
     model = MaskablePPO(
-        CustomCNNPolicy, env, verbose=1, tensorboard_log="./tensorboard_logs"
+        "MlpPolicy", env, verbose=1, tensorboard_log="./tensorboard_logs"
     )
+    # model = MaskablePPO(
+    #     CustomCNNPolicy, env, verbose=1, tensorboard_log="./tensorboard_logs"
+    # )
 
     # model.learn(total_timesteps=100_000)
     model.learn(total_timesteps=time_steps)
@@ -42,4 +42,5 @@ def train(time_steps: int):
 
 
 if __name__ == "__main__":
-    train(100000)
+    # train(100000)
+    train(500000)

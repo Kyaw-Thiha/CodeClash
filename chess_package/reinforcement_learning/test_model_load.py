@@ -13,7 +13,8 @@ def get_raw_env(env: gym.Env) -> CustomChessEnv:
 
 
 # 1. Load model
-time_steps = 100000
+# time_steps = 100000
+time_steps = 500000
 # model = PPO.load(f"chess_model_{time_steps}")
 model = MaskablePPO.load(f"chess_model_{time_steps}")
 
@@ -124,7 +125,7 @@ def print_board(board, last_move=None):
     print()
 
 
-for i in range(30):
+for i in range(40):
     print(f"\n===== TURN {i + 1} ({raw_env.turn}) =====")
     mask = raw_env.get_action_mask()
     action, _ = model.predict(obs, action_masks=mask, deterministic=True)

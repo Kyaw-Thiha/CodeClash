@@ -24,6 +24,7 @@ For rules and move formats, see the `design_doc.md` file provided.
 
 import json
 import sys
+import traceback
 
 import random
 import gymnasium as gym
@@ -43,8 +44,7 @@ def get_raw_env(env: gym.Env) -> CustomChessEnv:
     return cast(CustomChessEnv, env.unwrapped)
 
 
-time_steps = 100000
-model = MaskablePPO.load(f"chess_model_{time_steps}")
+model = None
 
 
 def load_model(
@@ -57,6 +57,11 @@ def load_model(
     done: bool = False,
     winner: Optional[str] = None,
 ):
+    global model
+    if model is None:
+        time_steps = 100000
+        model = MaskablePPO.load(f"chess_model_{time_steps}")
+
     env = CustomChessEnv()
 
     def mask_fn(env):
@@ -334,6 +339,8 @@ def main():
         write_move(move_data)
         sys.exit(0)
     except Exception:
+        print(e)
+        traceback.print_exc()
         sys.exit(3)
 
 
