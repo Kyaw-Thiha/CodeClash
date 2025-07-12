@@ -1,0 +1,108 @@
+{
+  "board_size": 10,
+  "players": [
+    "X",
+    "O"
+  ],
+  "moves": [
+    {
+      "player": "X",
+      "position": [
+        5,
+        5
+      ]
+    },
+    {
+      "player": "O",
+      "position": [
+        4,
+        5
+      ]
+    },
+    {
+      "player": "X",
+      "position": [
+        5,
+        4
+      ]
+    },
+    {
+      "player": "O",
+      "position": [
+        5,
+        3
+      ]
+    },
+    {
+      "player": "X",
+      "position": [
+        5,
+        6
+      ]
+    },
+    {
+      "player": "O",
+      "position": [
+        5,
+        7
+      ]
+    },
+    {
+      "player": "X",
+      "position": [
+        6,
+        5
+      ]
+    },
+    {
+      "player": "O",
+      "position": [
+        4,
+        3
+      ]
+    },
+    {
+      "player": "X",
+      "position": [
+        7,
+        6
+      ]
+    },
+    {
+      "player": "O",
+      "position": [
+        3,
+        3
+      ]
+    },
+    {
+      "player": "X",
+      "position": [
+        7,
+        5
+      ]
+    },
+    {
+      "player": "O",
+      "position": [
+        2,
+        3
+      ]
+    },
+    {
+      "player": "X",
+      "position": [
+        1,
+        3
+      ]
+    },
+    {
+      "player": "O",
+      "position": [
+        6,
+        3
+      ]
+    }
+  ],
+  "winner": "O"
+}
