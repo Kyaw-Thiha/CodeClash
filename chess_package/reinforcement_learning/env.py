@@ -9,7 +9,7 @@ from game_representation import Piece, GameState, Move, ActionMapper
 from game_mechanics import get_legal_moves
 
 import random
-from typing import Any
+from typing import Any, Optional, List
 
 # def _place_pieces(self):
 #     """
@@ -28,8 +28,11 @@ from typing import Any
 class CustomChessEnv(gym.Env):
     def __init__(self, seed=42, sophisticated_rewards=False):
         super().__init__()
-        self.rng = random.Random(seed)
-        self.board = [[None for _ in range(5)] for _ in range(5)]
+        self.rng = random.Random()
+        self.seed = self._seed(seed)
+        self.board: List[List[Optional[Piece]]] = [
+            [None for _ in range(5)] for _ in range(5)
+        ]
         self.turn = "white"
         self.done = False
         self.winner = None
@@ -48,9 +51,15 @@ class CustomChessEnv(gym.Env):
         self.sophisticated_rewards = sophisticated_rewards
         self.reset()
 
-    def reset(self, seed: int = 42, options: dict[str, Any] = {}):
-        self.board = [[None for _ in range(5)] for _ in range(5)]
-        self.rng = random.Random(seed)
+    def _seed(self, seed=None):
+        self.rng.seed(seed)
+
+    def reset(self, *, seed: Optional[int] = None, options: Optional[dict] = None):
+        super().reset(seed=seed)
+        self.board: List[List[Optional[Piece]]] = [
+            [None for _ in range(5)] for _ in range(5)
+        ]
+        self.seed = self._seed(seed)
         self.turn = "white"
         self.done = False
         self.winner = None
@@ -84,19 +93,23 @@ class CustomChessEnv(gym.Env):
 
     def step(self, action: int):
         if self.done:
-            return self._get_obs(), 0.0, True, {}
+            return self._get_obs(), 0.0, True, False, {}
 
         move = self.mapper.decode(action)
         reward = self._apply_move(move)
 
-        if self._check_win():
-            self.done = True
-            return self._get_obs(), 1.0 if self.winner == self.turn else -1.0, True, {}
+        terminated = self._check_win()
+        truncated = False
 
-        self._decrement_effects()
-        self.turn = "black" if self.turn == "white" else "white"
-        self.turn_counter += 1
-        return self._get_obs(), reward, self.done, False, {}
+        if terminated:
+            self.done = True
+            reward = 1.0 if self.winner == self.turn else -1.0
+        else:
+            self._decrement_effects()
+            self.turn = "black" if self.turn == "white" else "white"
+            self.turn_counter += 1
+
+        return self._get_obs(), reward, terminated, truncated, {}
 
     def _apply_move(self, move: Move):
         reward = 0.0

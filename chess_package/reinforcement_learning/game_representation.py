@@ -6,6 +6,7 @@ class Piece:
         self.type = type  # 'K', 'Q', 'R', 'B', 'P'
         self.color = color  # 'white' or 'black'
         self.shielded = shielded
+        self.last_shielded_turn: int
 
 
 class GameState:
