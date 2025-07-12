@@ -1,13 +1,44 @@
 {
-  "phase": "setup",
+  "phase": "play",
   "playerColor": "white",
   "board": [
     [
-      null,
-      null,
-      null,
-      null,
+      {
+        "type": "B",
+        "color": "white"
+      },
+      {
+        "type": "B",
+        "color": "white"
+      },
+      {
+        "type": "K",
+        "color": "white"
+      },
+      {
+        "type": "P",
+        "color": "white"
+      },
       null
+    ],
+    [
+      {
+        "type": "R",
+        "color": "white"
+      },
+      {
+        "type": "P",
+        "color": "white"
+      },
+      {
+        "type": "P",
+        "color": "white"
+      },
+      null,
+      {
+        "type": "R",
+        "color": "white"
+      }
     ],
     [
       null,
@@ -18,24 +49,41 @@
     ],
     [
       null,
+      {
+        "type": "P",
+        "color": "black"
+      },
       null,
-      null,
-      null,
-      null
+      {
+        "type": "P",
+        "color": "black"
+      },
+      {
+        "type": "B",
+        "color": "black"
+      }
     ],
     [
-      null,
-      null,
-      null,
-      null,
-      null
-    ],
-    [
-      null,
-      null,
-      null,
-      null,
-      null
+      {
+        "type": "K",
+        "color": "black"
+      },
+      {
+        "type": "B",
+        "color": "black"
+      },
+      {
+        "type": "R",
+        "color": "black"
+      },
+      {
+        "type": "P",
+        "color": "black"
+      },
+      {
+        "type": "R",
+        "color": "black"
+      }
     ]
   ],
   "abilitiesRemaining": {
@@ -45,6 +93,6 @@
   },
   "abilitiesActivated": [],
   "turnNumber": 1,
-  "setupStep": 1,
+  "setupStep": 4,
   "blockedTiles": []
 }
