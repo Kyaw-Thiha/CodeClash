@@ -237,7 +237,7 @@ def setup_phase(state: Dict[str, Any]) -> Dict[str, Any]:
 
     Return a dict: {'move': {'from': [...], 'to': [row, col]}}
     """
-
+    # TODO: Implement your setup logic
     r = 0 if state["playerColor"] == "white" else 4
     r2 = 1 if state["playerColor"] == "white" else 3
 
@@ -252,7 +252,7 @@ def setup_phase(state: Dict[str, Any]) -> Dict[str, Any]:
     elif state["setupStep"] == 3:
         kingPos = findOtherKingColumn(state)
         if (
-            state["board"][r2][kingPos] == None
+            state["board"][r2][kingPos] is None
             or not state["board"][r2][kingPos]["type"] == "R"
         ):
             return {"move": {"to": [r2, kingPos]}}
@@ -265,11 +265,12 @@ def setup_phase(state: Dict[str, Any]) -> Dict[str, Any]:
         counts = countBishopPawns(state)
         for row in {r, r2}:
             for col in range(0, 4):
-                if state["board"][row][col] == None:
+                if state["board"][row][col] is None:
                     if counts[0] < 2:
                         return {"move": {"from": [0, 3], "to": [row, col]}}
                     else:
                         return {"move": {"from": [0, 4], "to": [row, col]}}
+        return {}
     return {}
 
 

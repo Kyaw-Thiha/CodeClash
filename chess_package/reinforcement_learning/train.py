@@ -1,9 +1,11 @@
 from stable_baselines3 import PPO
 from stable_baselines3.common.env_checker import check_env
 from stable_baselines3.common.monitor import Monitor
-from env import CustomChessEnv
 from sb3_contrib.ppo_mask import MaskablePPO
 from sb3_contrib.common.wrappers import ActionMasker
+
+from cnn_model import CustomCNNPolicy
+from env import CustomChessEnv
 
 
 def train(time_steps: int):
@@ -22,9 +24,13 @@ def train(time_steps: int):
 
     print("Training the model")
 
+    # model = MaskablePPO(
+    #     "MlpPolicy", env, verbose=1, tensorboard_log="./tensorboard_logs"
+    # )
     model = MaskablePPO(
-        "MlpPolicy", env, verbose=1, tensorboard_log="./tensorboard_logs"
+        CustomCNNPolicy, env, verbose=1, tensorboard_log="./tensorboard_logs"
     )
+
     # model.learn(total_timesteps=100_000)
     model.learn(total_timesteps=time_steps)
     print("Finished training the model")
@@ -36,4 +42,4 @@ def train(time_steps: int):
 
 
 if __name__ == "__main__":
-    train(100_000)
+    train(100000)
