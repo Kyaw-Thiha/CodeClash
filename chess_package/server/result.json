@@ -1,0 +1,1618 @@
+{
+  "starting_position": [
+    [
+      "WR",
+      "WP",
+      "WP",
+      "WB",
+      "F"
+    ],
+    [
+      "WR",
+      "WB",
+      "WK",
+      "F",
+      "WP"
+    ],
+    [
+      "F",
+      "F",
+      "F",
+      "F",
+      "F"
+    ],
+    [
+      "BB",
+      "BP",
+      "BB",
+      "F",
+      "BP"
+    ],
+    [
+      "BR",
+      "BK",
+      "BR",
+      "BP",
+      "F"
+    ]
+  ],
+  "moves": [
+    {
+      "move_num": 1,
+      "color": "white",
+      "move": {
+        "from": [
+          1,
+          4
+        ],
+        "to": [
+          2,
+          4
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "WP",
+          "WP",
+          "WB",
+          "F"
+        ],
+        [
+          "WR",
+          "WB",
+          "WK",
+          "F",
+          "F"
+        ],
+        [
+          "F",
+          "F",
+          "F",
+          "F",
+          "WP"
+        ],
+        [
+          "BB",
+          "BP",
+          "BB",
+          "F",
+          "BP"
+        ],
+        [
+          "BR",
+          "BK",
+          "BR",
+          "BP",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 2,
+      "color": "black",
+      "move": {
+        "from": [
+          3,
+          2
+        ],
+        "to": [
+          2,
+          3
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "WP",
+          "WP",
+          "WB",
+          "F"
+        ],
+        [
+          "WR",
+          "WB",
+          "WK",
+          "F",
+          "F"
+        ],
+        [
+          "F",
+          "F",
+          "F",
+          "BB",
+          "WP"
+        ],
+        [
+          "BB",
+          "BP",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "BR",
+          "BK",
+          "BR",
+          "BP",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 3,
+      "color": "white",
+      "move": {
+        "from": [
+          1,
+          1
+        ],
+        "to": [
+          2,
+          0
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "WP",
+          "WP",
+          "WB",
+          "F"
+        ],
+        [
+          "WR",
+          "F",
+          "WK",
+          "F",
+          "F"
+        ],
+        [
+          "WB",
+          "F",
+          "F",
+          "BB",
+          "WP"
+        ],
+        [
+          "BB",
+          "BP",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "BR",
+          "BK",
+          "BR",
+          "BP",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 4,
+      "color": "black",
+      "move": {
+        "from": [
+          3,
+          0
+        ],
+        "to": [
+          2,
+          1
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "WP",
+          "WP",
+          "WB",
+          "F"
+        ],
+        [
+          "WR",
+          "F",
+          "WK",
+          "F",
+          "F"
+        ],
+        [
+          "WB",
+          "BB",
+          "F",
+          "BB",
+          "WP"
+        ],
+        [
+          "F",
+          "BP",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "BR",
+          "BK",
+          "BR",
+          "BP",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 5,
+      "color": "white",
+      "move": {
+        "from": [
+          0,
+          1
+        ],
+        "to": [
+          1,
+          1
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "WP",
+          "WB",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "WK",
+          "F",
+          "F"
+        ],
+        [
+          "WB",
+          "BB",
+          "F",
+          "BB",
+          "WP"
+        ],
+        [
+          "F",
+          "BP",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "BR",
+          "BK",
+          "BR",
+          "BP",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 6,
+      "color": "black",
+      "move": {
+        "from": [
+          4,
+          1
+        ],
+        "to": [
+          3,
+          2
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "WP",
+          "WB",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "WK",
+          "F",
+          "F"
+        ],
+        [
+          "WB",
+          "BB",
+          "F",
+          "BB",
+          "WP"
+        ],
+        [
+          "F",
+          "BP",
+          "BK",
+          "F",
+          "BP"
+        ],
+        [
+          "BR",
+          "F",
+          "BR",
+          "BP",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 7,
+      "color": "white",
+      "move": {
+        "from": [
+          1,
+          2
+        ],
+        "to": [
+          2,
+          2
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "WP",
+          "WB",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "WB",
+          "BB",
+          "WK",
+          "BB",
+          "WP"
+        ],
+        [
+          "F",
+          "BP",
+          "BK",
+          "F",
+          "BP"
+        ],
+        [
+          "BR",
+          "F",
+          "BR",
+          "BP",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 8,
+      "color": "black",
+      "move": {
+        "from": [
+          4,
+          0
+        ],
+        "to": [
+          4,
+          1
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "WP",
+          "WB",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "WB",
+          "BB",
+          "WK",
+          "BB",
+          "WP"
+        ],
+        [
+          "F",
+          "BP",
+          "BK",
+          "F",
+          "BP"
+        ],
+        [
+          "F",
+          "BR",
+          "BR",
+          "BP",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 9,
+      "color": "white",
+      "move": {
+        "from": [
+          2,
+          2
+        ],
+        "to": [
+          1,
+          3
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "WP",
+          "WB",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "F",
+          "WK",
+          "F"
+        ],
+        [
+          "WB",
+          "BB",
+          "F",
+          "BB",
+          "WP"
+        ],
+        [
+          "F",
+          "BP",
+          "BK",
+          "F",
+          "BP"
+        ],
+        [
+          "F",
+          "BR",
+          "BR",
+          "BP",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 10,
+      "color": "black",
+      "move": {
+        "from": [
+          4,
+          3
+        ],
+        "to": [
+          3,
+          3
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "WP",
+          "WB",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "F",
+          "WK",
+          "F"
+        ],
+        [
+          "WB",
+          "BB",
+          "F",
+          "BB",
+          "WP"
+        ],
+        [
+          "F",
+          "BP",
+          "BK",
+          "BP",
+          "BP"
+        ],
+        [
+          "F",
+          "BR",
+          "BR",
+          "F",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 11,
+      "color": "white",
+      "move": {
+        "from": [
+          0,
+          3
+        ],
+        "to": [
+          2,
+          1
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "WP",
+          "F",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "F",
+          "WK",
+          "F"
+        ],
+        [
+          "WB",
+          "WB",
+          "F",
+          "BB",
+          "WP"
+        ],
+        [
+          "F",
+          "BP",
+          "BK",
+          "BP",
+          "BP"
+        ],
+        [
+          "F",
+          "BR",
+          "BR",
+          "F",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 12,
+      "color": "black",
+      "move": {
+        "from": [
+          3,
+          2
+        ],
+        "to": [
+          4,
+          3
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "WP",
+          "F",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "F",
+          "WK",
+          "F"
+        ],
+        [
+          "WB",
+          "WB",
+          "F",
+          "BB",
+          "WP"
+        ],
+        [
+          "F",
+          "BP",
+          "F",
+          "BP",
+          "BP"
+        ],
+        [
+          "F",
+          "BR",
+          "BR",
+          "BK",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 13,
+      "color": "white",
+      "move": {
+        "from": [
+          1,
+          3
+        ],
+        "to": [
+          0,
+          3
+        ]
+      },
+      "abilitiesUsed": [
+        {
+          "name": "shield",
+          "target": [
+            1,
+            0
+          ]
+        }
+      ],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "WP",
+          "WK",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "WB",
+          "WB",
+          "F",
+          "BB",
+          "WP"
+        ],
+        [
+          "F",
+          "BP",
+          "F",
+          "BP",
+          "BP"
+        ],
+        [
+          "F",
+          "BR",
+          "BR",
+          "BK",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 14,
+      "color": "black",
+      "move": {
+        "from": [
+          3,
+          1
+        ],
+        "to": [
+          2,
+          0
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "WP",
+          "WK",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "BP",
+          "WB",
+          "F",
+          "BB",
+          "WP"
+        ],
+        [
+          "F",
+          "F",
+          "F",
+          "BP",
+          "BP"
+        ],
+        [
+          "F",
+          "BR",
+          "BR",
+          "BK",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 15,
+      "color": "white",
+      "move": {
+        "from": [
+          0,
+          3
+        ],
+        "to": [
+          1,
+          3
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "WP",
+          "F",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "F",
+          "WK",
+          "F"
+        ],
+        [
+          "BP",
+          "WB",
+          "F",
+          "BB",
+          "WP"
+        ],
+        [
+          "F",
+          "F",
+          "F",
+          "BP",
+          "BP"
+        ],
+        [
+          "F",
+          "BR",
+          "BR",
+          "BK",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 16,
+      "color": "black",
+      "move": {
+        "from": [
+          2,
+          0
+        ],
+        "to": [
+          1,
+          1
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "WP",
+          "F",
+          "F"
+        ],
+        [
+          "WR",
+          "BP",
+          "F",
+          "WK",
+          "F"
+        ],
+        [
+          "F",
+          "WB",
+          "F",
+          "BB",
+          "WP"
+        ],
+        [
+          "F",
+          "F",
+          "F",
+          "BP",
+          "BP"
+        ],
+        [
+          "F",
+          "BR",
+          "BR",
+          "BK",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 17,
+      "color": "white",
+      "move": {
+        "from": [
+          0,
+          2
+        ],
+        "to": [
+          1,
+          1
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "F",
+          "WK",
+          "F"
+        ],
+        [
+          "F",
+          "WB",
+          "F",
+          "BB",
+          "WP"
+        ],
+        [
+          "F",
+          "F",
+          "F",
+          "BP",
+          "BP"
+        ],
+        [
+          "F",
+          "BR",
+          "BR",
+          "BK",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 18,
+      "color": "black",
+      "move": {
+        "from": [
+          3,
+          3
+        ],
+        "to": [
+          2,
+          4
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "F",
+          "WK",
+          "F"
+        ],
+        [
+          "F",
+          "WB",
+          "F",
+          "BB",
+          "BP"
+        ],
+        [
+          "F",
+          "F",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "F",
+          "BR",
+          "BR",
+          "BK",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 19,
+      "color": "white",
+      "move": {
+        "from": [
+          1,
+          3
+        ],
+        "to": [
+          0,
+          3
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "F",
+          "WK",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "F",
+          "WB",
+          "F",
+          "BB",
+          "BP"
+        ],
+        [
+          "F",
+          "F",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "F",
+          "BR",
+          "BR",
+          "BK",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 20,
+      "color": "black",
+      "move": {
+        "from": [
+          4,
+          3
+        ],
+        "to": [
+          3,
+          2
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "F",
+          "WK",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "F",
+          "WB",
+          "F",
+          "BB",
+          "BP"
+        ],
+        [
+          "F",
+          "F",
+          "BK",
+          "F",
+          "BP"
+        ],
+        [
+          "F",
+          "BR",
+          "BR",
+          "F",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 21,
+      "color": "white",
+      "move": {
+        "from": [
+          0,
+          3
+        ],
+        "to": [
+          1,
+          3
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "F",
+          "WK",
+          "F"
+        ],
+        [
+          "F",
+          "WB",
+          "F",
+          "BB",
+          "BP"
+        ],
+        [
+          "F",
+          "F",
+          "BK",
+          "F",
+          "BP"
+        ],
+        [
+          "F",
+          "BR",
+          "BR",
+          "F",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 22,
+      "color": "black",
+      "move": {
+        "from": [
+          3,
+          2
+        ],
+        "to": [
+          3,
+          1
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "F",
+          "WK",
+          "F"
+        ],
+        [
+          "F",
+          "WB",
+          "F",
+          "BB",
+          "BP"
+        ],
+        [
+          "F",
+          "BK",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "F",
+          "BR",
+          "BR",
+          "F",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 23,
+      "color": "white",
+      "move": {
+        "from": [
+          1,
+          3
+        ],
+        "to": [
+          2,
+          3
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "F",
+          "WB",
+          "F",
+          "WK",
+          "BP"
+        ],
+        [
+          "F",
+          "BK",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "F",
+          "BR",
+          "BR",
+          "F",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 24,
+      "color": "black",
+      "move": {
+        "from": [
+          4,
+          2
+        ],
+        "to": [
+          1,
+          2
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "BR",
+          "F",
+          "F"
+        ],
+        [
+          "F",
+          "WB",
+          "F",
+          "WK",
+          "BP"
+        ],
+        [
+          "F",
+          "BK",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "F",
+          "BR",
+          "F",
+          "F",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 25,
+      "color": "white",
+      "move": {
+        "from": [
+          2,
+          3
+        ],
+        "to": [
+          1,
+          3
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "BR",
+          "WK",
+          "F"
+        ],
+        [
+          "F",
+          "WB",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "F",
+          "BK",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "F",
+          "BR",
+          "F",
+          "F",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 26,
+      "color": "black",
+      "move": {
+        "from": [
+          4,
+          1
+        ],
+        "to": [
+          4,
+          0
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "BR",
+          "WK",
+          "F"
+        ],
+        [
+          "F",
+          "WB",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "F",
+          "BK",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "BR",
+          "F",
+          "F",
+          "F",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 27,
+      "color": "white",
+      "move": {
+        "from": [
+          2,
+          1
+        ],
+        "to": [
+          1,
+          2
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "WB",
+          "WK",
+          "F"
+        ],
+        [
+          "F",
+          "F",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "F",
+          "BK",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "BR",
+          "F",
+          "F",
+          "F",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 28,
+      "color": "black",
+      "move": {
+        "from": [
+          3,
+          1
+        ],
+        "to": [
+          2,
+          1
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "WB",
+          "WK",
+          "F"
+        ],
+        [
+          "F",
+          "BK",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "F",
+          "F",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "BR",
+          "F",
+          "F",
+          "F",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 29,
+      "color": "white",
+      "move": {
+        "from": [
+          1,
+          3
+        ],
+        "to": [
+          0,
+          2
+        ]
+      },
+      "abilitiesUsed": [
+        {
+          "name": "fog",
+          "target": null
+        }
+      ],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "WK",
+          "F",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "WB",
+          "F",
+          "F"
+        ],
+        [
+          "F",
+          "BK",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "F",
+          "F",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "BR",
+          "F",
+          "F",
+          "F",
+          "F"
+        ]
+      ]
+    },
+    {
+      "move_num": 30,
+      "color": "black",
+      "move": {
+        "from": [
+          2,
+          4
+        ],
+        "to": [
+          1,
+          4
+        ]
+      },
+      "abilitiesUsed": [],
+      "stateAfter": [
+        [
+          "WR",
+          "F",
+          "WK",
+          "F",
+          "F"
+        ],
+        [
+          "WR",
+          "WP",
+          "WB",
+          "F",
+          "BP"
+        ],
+        [
+          "F",
+          "BK",
+          "F",
+          "F",
+          "F"
+        ],
+        [
+          "F",
+          "F",
+          "F",
+          "F",
+          "BP"
+        ],
+        [
+          "BR",
+          "F",
+          "F",
+          "F",
+          "F"
+        ]
+      ]
+    }
+  ],
+  "game_result": {
+    "winner": "black",
+    "reason": "forfeit"
+  }
+}

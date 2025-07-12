@@ -51,6 +51,56 @@ def write_move(move_data: Dict[str, Any]) -> None:
 
 # vvv Our implementation is below vvv
 
+class Piece:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+    def getAvailableMoves(self, state) -> list[(int, bool)]:
+        return []
+
+
+class King(Piece):
+    def getAvailableMoves(self, state) -> list[(int, bool)]:
+        '''
+        King available moves:
+        - 0-9 (excluding 4): tiles clockwise from top-left
+        '''
+        availableMoves = []
+        for i in range(0, 9):
+            if (i == 4 
+                or not 0 <= self.x - i%3 <= 4 
+                or not 0 <= self.x - i/3 <= 4):
+                continue
+            availableMoves.append([i])
+        return availableMoves
+    
+class Pawn(Piece):
+    def getAvailableMoves(self, state) -> list[(int, bool)]:
+        '''
+        Pawn available moves:
+        - 0: up-left attack
+        - 1: one tile up
+        - 2: up-right attack
+        '''
+        availableMoves = []
+        if self.y + 1 < 4:
+            availableMoves.append([1])
+            if self.x > 0 and state["board"][self.x-1][self.y+1]["color"] != state["playerColor"]:
+                availableMoves.append([0])
+            if self.x < 4 and state["board"][self.x+1][self.y+1]["color"] != state["playerColor"]:
+                availableMoves.append([2])
+        return availableMoves
+    
+class Bishop(Piece):
+    def getAvailableMoves(self, state) -> list[(int, bool)]:
+        '''
+        Bishop available moves:
+        - list of 4 tuples (n, b): (# of tiles moveable in direction clockwise
+                                    from up-left diagonal, attack available?)
+        '''
+        availableMoves = []
+
 def findOtherKingColumn(state) -> int:
     r = 0 if state["playerColor"] == "white" else 4
     r2 = 1 if state["playerColor"] == "white" else 3
@@ -123,6 +173,8 @@ def setup_phase(state: Dict[str, Any]) -> Dict[str, Any]:
                         return {"move": {"from": [0, 4], "to": [row, col]}}
         return {}
                     
+
+
 
 
 def play_phase(state: Dict[str, Any]) -> Dict[str, Any]:
