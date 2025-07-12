@@ -7,83 +7,68 @@
         "type": "B",
         "color": "white"
       },
-      {
-        "type": "B",
-        "color": "white"
-      },
-      {
-        "type": "K",
-        "color": "white"
-      },
+      null,
+      null,
       {
         "type": "P",
         "color": "white"
-      },
-      null
-    ],
-    [
-      {
-        "type": "R",
-        "color": "white"
-      },
-      {
-        "type": "P",
-        "color": "white"
-      },
-      {
-        "type": "P",
-        "color": "white"
-      },
-      {
-        "type": "R",
-        "color": "white"
-      },
-      null
-    ],
-    [
-      null,
-      null,
-      null,
-      null,
-      null
-    ],
-    [
-      {
-        "type": "P",
-        "color": "black"
-      },
-      {
-        "type": "R",
-        "color": "black"
-      },
-      null,
-      {
-        "type": "B",
-        "color": "black"
       },
       null
     ],
     [
       {
         "type": "K",
-        "color": "black"
-      },
-      {
-        "type": "B",
-        "color": "black"
+        "color": "white"
       },
       {
         "type": "P",
-        "color": "black"
+        "color": "white"
       },
+      null,
+      {
+        "type": "P",
+        "color": "white"
+      },
+      null
+    ],
+    [
+      null,
+      null,
       {
         "type": "R",
-        "color": "black"
+        "color": "white"
       },
+      null,
       {
-        "type": "P",
+        "type": "R",
         "color": "black"
       }
+    ],
+    [
+      null,
+      null,
+      null,
+      {
+        "type": "R",
+        "color": "black"
+      },
+      {
+        "type": "B",
+        "color": "black"
+      }
+    ],
+    [
+      {
+        "type": "P",
+        "color": "black"
+      },
+      null,
+      null,
+      {
+        "type": "K",
+        "color": "black"
+      },
+      null
     ]
   ],
   "abilitiesRemaining": {
@@ -92,7 +77,7 @@
     "shield": true
   },
   "abilitiesActivated": [],
-  "turnNumber": 1,
+  "turnNumber": 19,
   "setupStep": 4,
   "blockedTiles": []
 }

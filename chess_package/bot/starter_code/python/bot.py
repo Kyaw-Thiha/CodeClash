@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import random
+import traceback
 """
 Code Clash Chess Challenge — Python Starter Bot
 
@@ -69,10 +70,14 @@ class King(Piece):
         availableMoves = []
         for i in range(0, 9):
             if (i == 4 
-                or not 0 <= self.x - i%3 <= 4 
-                or not 0 <= self.x - i/3 <= 4):
+                or not 0 <= self.x - i%3 - 1 <= 4 
+                or not 0 <= self.y + i//3  - 1<= 4
+                or (state["board"][self.y + i//3 - 1][self.x - i%3 - 1] != None
+                    and state["board"][self.y + i//3 - 1][self.x - i%3 - 1]["color"] == state["playerColor"])):
                 continue
-            availableMoves.append([i])
+            b = (state["board"][self.y + i//3 - 1][self.x - i%3 - 1] != None 
+                 and state["board"][self.y + i//3 - 1][self.x - i%3- 1]["color"] != state["playerColor"])
+            availableMoves.append((i, b))
         return availableMoves
     
 class Pawn(Piece):
@@ -84,12 +89,19 @@ class Pawn(Piece):
         - 2: up-right attack
         '''
         availableMoves = []
-        if self.y + 1 < 4:
-            availableMoves.append([1])
-            if self.x > 0 and state["board"][self.x-1][self.y+1]["color"] != state["playerColor"]:
-                availableMoves.append([0])
-            if self.x < 4 and state["board"][self.x+1][self.y+1]["color"] != state["playerColor"]:
-                availableMoves.append([2])
+        inc = -1 if state["playerColor"] == "black" else 1
+        if 0 <= self.y + inc <= 4:
+            if (state["board"][self.y+inc][self.x] != None
+                and state["board"][self.y+inc][self.x]["color"] != state["playerColor"]):
+                availableMoves.append((1, False))
+            if (self.x > 0 
+                and state["board"][self.y+inc][self.x-1] != None 
+                and state["board"][self.y+inc][self.x-1]["color"] != state["playerColor"]):
+                availableMoves.append((0, True))
+            if (self.x < 4 
+                and state["board"][self.y+inc][self.x+1] != None
+                and state["board"][self.y+inc][self.x+1]["color"] != state["playerColor"]):
+                availableMoves.append((2, True))
         return availableMoves
     
 class Bishop(Piece):
@@ -100,6 +112,57 @@ class Bishop(Piece):
                                     from up-left diagonal, attack available?)
         '''
         availableMoves = []
+        for inc in [(-1, -1), (1, -1), (1, 1), (-1, 1)]:
+            n = 0
+            b = False
+            cX = self.x + inc[0]
+            cY = self.y + inc[1]
+            while (0 <= cX <= 4 
+                   and 0 <= cY <= 4
+                   and state["board"][cY][cX] == None):
+                n += 1
+                cX += inc[0]
+                cY += inc[1]
+
+            if (0 <= cX <= 4 
+                and 0 <= cY <= 4
+                and state["board"][cY][cX] != None
+                and state["board"][cY][cX]["color"] != state["playerColor"]):
+                n += 1
+                b = True
+            availableMoves.append((n, b))
+            
+        return availableMoves
+
+class Rook(Piece):
+    def getAvailableMoves(self, state) -> list[(int, bool)]:
+        '''
+        Rook available moves:
+        - list of 4 tuples (n, b): (# of tiles moveable in direction clockwise
+                                    from up vertical, attack available?)
+        '''
+        availableMoves = []
+        for inc in [(0, -1), (1, 0), (0, 1), (-1, 0)]:
+            n = 0
+            b = False
+            cX = self.x + inc[0]
+            cY = self.y + inc[1]
+            while (0 <= cX <= 4 
+                   and 0 <= cY <= 4
+                   and state["board"][cY][cX] == None):
+                n += 1
+                cX += inc[0]
+                cY += inc[1]
+
+            if (0 <= cX <= 4 
+                and 0 <= cY <= 4
+                and state["board"][cY][cX] != None 
+                and state["board"][cY][cX]["color"] != state["playerColor"]):
+                n += 1
+                b = True
+            availableMoves.append((n, b))
+        
+        return availableMoves
 
 def findOtherKingColumn(state) -> int:
     r = 0 if state["playerColor"] == "white" else 4
@@ -107,10 +170,10 @@ def findOtherKingColumn(state) -> int:
 
     # Find column of opponent king
     for row in [r, r2]:
-        for x in range(0, 4):
-            if state["board"][4 - r][x] == None:
+        for x in range(0, 5):
+            if state["board"][4 - row][x] == None:
                 continue
-            if state["board"][4 - r][x]["type"] == 'K':
+            if state["board"][4 - row][x]["type"] == 'K':
                 return x
     return -1
 
@@ -121,7 +184,7 @@ def countBishopPawns(state):
     r2 = 1 if state["playerColor"] == "white" else 3
 
     for row in [r, r2]:
-        for col in range(0, 4):
+        for col in range(0, 5):
             if state["board"][row][col] == None:
                 continue
             elif state["board"][row][col]["type"] == "B":
@@ -175,6 +238,15 @@ def setup_phase(state: Dict[str, Any]) -> Dict[str, Any]:
                     
 
 
+def makeTurn(fromCrd, toCrd, ability):
+    '''
+    Returns a play phase return-object, moving object from fromCrd to toCrd,
+    using the ability ability, if any.
+    '''
+    return {
+                "move": {"from": fromCrd, "to": toCrd},
+                "ability": {"name": ability[0], "target": ability[1]}
+            }
 
 
 def play_phase(state: Dict[str, Any]) -> Dict[str, Any]:
@@ -190,8 +262,82 @@ def play_phase(state: Dict[str, Any]) -> Dict[str, Any]:
     }
     """
     # TODO: Implement your play logic
-    
+    for i in range(0, 25):
+        tile = state["board"][i//5][i%5]
 
+        if (tile == None):
+            continue
+        if tile["color"] == state["playerColor"]:
+            if tile["type"] == 'K':
+                piece = King(i%5, i//5)
+            elif tile["type"] == 'P':
+                piece = Pawn(i%5, i//5)
+            elif tile["type"] == 'B':
+                piece = Bishop(i%5, i//5)
+            elif tile["type"] == 'R':
+                piece = Rook(i%5, i//5)
+            else:
+                print("No piece type")
+                piece = Piece(i%5, i//5)
+        else:
+            continue
+            
+        fromCrd = [piece.y, piece.x]
+        toCrd = []
+        moves = piece.getAvailableMoves(state)
+        
+        if len(moves) == 0:
+            continue
+        if isinstance(piece, King):
+            toCrd = [fromCrd[0] + moves[0][0]//3 -1, fromCrd[1] - moves[0][0]%3 - 1]
+            
+            return makeTurn(fromCrd, toCrd, (None, None))
+        elif isinstance(piece, Pawn):
+            crds = [[fromCrd[0]-1, fromCrd[1]-1], [fromCrd[0]-1, fromCrd[1]], [fromCrd[0]-1, fromCrd[1]+1]]
+            toCrd = crds[moves[0][0]]
+            return makeTurn(fromCrd, toCrd, (None, None))
+        elif isinstance(piece, Bishop):
+            inc = []
+            for dir in range(0, 4):
+                n = moves[dir][0]
+                if n == 0:
+                    continue
+
+                if dir == 0:
+                    inc = [-n, -n]
+                elif dir == 1:
+                    inc = [-n, n]
+                elif dir == 2:
+                    inc = [n, n]
+                elif dir == 3:
+                    inc = [n, -n]
+
+                toCrd = [fromCrd[0] + inc[0], fromCrd[1] + inc[1]]
+                
+                return makeTurn(fromCrd, toCrd, (None, None))
+            
+        elif isinstance(piece, Rook):
+            inc = []
+            for dir in range(0, 4):
+                n = moves[dir][0]
+                if n == 0:
+                    continue
+
+                if dir == 0:
+                    inc = [-n, 0]
+                elif dir == 1:
+                    inc = [0, n]
+                elif dir == 2:
+                    inc = [n, 0]
+                elif dir == 3:
+                    inc = [0, -n]
+                toCrd = [fromCrd[0] + inc[0], fromCrd[1] + inc[1]]
+
+                return makeTurn(fromCrd, toCrd, (None, None))
+        
+    return makeTurn(fromCrd, toCrd, (None, None))
+    
+ 
 
 def main():
     """
@@ -220,7 +366,9 @@ def main():
 
         write_move(move_data)
         sys.exit(0)
-    except Exception:
+    except Exception as e:
+        print(e)
+        traceback.print_exc()
         sys.exit(3)
 
 
