@@ -22,6 +22,13 @@ For rules, move format, and submission details see design_doc.md.
 import sys
 import json
 
+
+# Simon added libraries
+from typing import List
+
+# Simon added constants
+SIZE = 10
+
 def get_valid_moves(board):
     """Return list of empty ([row, col]) cells on the board."""
     moves = []
@@ -30,6 +37,172 @@ def get_valid_moves(board):
             if board[i][j] == "":
                 moves.append((i, j))
     return moves
+
+
+# ____________________Simon defined classes____________________
+class Position:
+    # Simon's datatype Line
+    # Has attributes 
+    #   x: int
+    #   y: int
+    # Attributes indicate the position of the piece
+    def __init__(self, x: int, y: int):
+        self.x = x
+        self.y = y
+
+    def __repr__(self) -> str:
+        return f"Position({self.x}, {self.y})"
+
+
+class Line:
+    # Simon's datatype Line
+    # Has attributes 
+    #   num_pieces: int
+    #   sides_blocked: int (0 or 1 or 2)
+    #   positions: list[tuple[int,int]] (the positions of pieces on the line)
+    def __init__(self, num_pieces: int, sides_blocked: int, positions: List[Position]):
+        if len(positions) != num_pieces:
+            raise ValueError("positions list must match num_pieces")
+        self.num_pieces = num_pieces
+        self.sides_blocked = sides_blocked
+        self.positions = positions
+
+
+    def __repr__(self) -> str:
+        return f"Line(num_pieces={self.num_pieces}, sides_blocked={self.sides_blocked}, positions={self.positions})"
+
+# ____________________Simon defined functions____________________
+
+
+def getLineH(piece: Position, board: List[List[str]]) -> Line:
+    # Simon's function
+    # Takes a piece's position, and returns a line representing
+    # the line from the current piece to the right until the 
+    # piece is no longer of the same type or is empty
+    #
+    # The function returns an empty Line if the piece is not the
+    # leftmost piece OR the piece is standalone to the right.
+
+    # if current piece is not the leftmost piece, return empty line
+    current: str
+    count: int
+    result: Line
+    result = Line(1, 0, [piece])
+    current = board[piece.x][piece.y]
+    if(piece.x != 0 and board[piece.x - 1][piece.y] == current):
+        return Line(-1, -1, [])
+
+    count = 1
+    while(piece.x + count < SIZE and board[piece.x + count][piece.y] == current):
+        result.positions.append(Position(piece.x + count, piece.y))
+        count += 1
+
+    if(piece.x == 0 or board[piece.x - 1][piece.y] != ''):
+        result.sides_blocked += 1
+    if(piece.x + count >= SIZE - 1 or board[piece.x + count + 1][piece.y] != ''):
+        result.sides_blocked += 1
+
+    return result
+
+def getLineV(piece: Position, board: List[List[str]]) -> Line:
+    # Simon's function
+    # Same as getLineH except it works for vertical line instead
+    current: str
+    count: int
+    result: Line
+    result = Line(1, 0, [piece])
+    current = board[piece.x][piece.y]
+    if(piece.y != 0 and board[piece.x][piece.y - 1] == current):
+        return Line(-1, -1, [])
+
+    count = 1
+    while(piece.y + count < SIZE and board[piece.x][piece.y + count] == current):
+        result.positions.append(Position(piece.x, piece.y + count))
+        count += 1
+
+    if(piece.y == 0 or board[piece.x][piece.y - 1] != ''):
+        result.sides_blocked += 1
+    if(piece.y + count >= SIZE - 1 or board[piece.x][piece.y + count + 1] != ''):
+        result.sides_blocked += 1
+    
+    return result
+
+def getLineD1(piece: Position, board: List[List[str]]) -> Line:
+    # Simon's function
+    # Same as getLineH except it works for diagonal line top left to bottom right
+    current: str
+    count: int
+    result: Line
+    result = Line(1, 0, [piece])
+    current = board[piece.x][piece.y]
+    if(piece.x != 0 and piece.y != 0 and board[piece.x - 1][piece.y - 1] == current):
+        return Line(-1, -1, [])
+
+    count = 1
+    while(piece.x + count < SIZE and piece.y + count < SIZE and board[piece.x + count][piece.y + count] == current):
+        result.positions.append(Position(piece.x + count, piece.y + count))
+        count += 1
+
+    if(piece.x == 0 or piece.y == 0 or board[piece.x - 1][piece.y - 1] != ''):
+        result.sides_blocked += 1
+    if(piece.x + count >= SIZE - 1 or piece.y + count >= SIZE - 1 or board[piece.x + count + 1][piece.y + count + 1] != ''):
+        result.sides_blocked += 1
+    
+    return result
+
+
+def getLineD2(piece: Position, board: List[List[str]]) -> Line:
+    # Simon's function
+    # Works for diagonal line bottom-left to top-right (↗)
+    current: str
+    count: int
+    result: Line
+    result = Line(1, 0, [piece])
+    current = board[piece.x][piece.y]
+    
+    if(piece.x != SIZE - 1 and piece.y != 0 and board[piece.x + 1][piece.y - 1] == current):
+        return Line(-1, -1, [])
+
+    count = 1
+    while(piece.x - count >= 0 and piece.y + count < SIZE and board[piece.x - count][piece.y + count] == current):
+        result.positions.append(Position(piece.x - count, piece.y + count))
+        count += 1
+
+    if(piece.x == SIZE - 1 or piece.y == 0 or board[piece.x + 1][piece.y - 1] != ''):
+        result.sides_blocked += 1
+    if(piece.x - count - 1 < 0 or piece.y + count + 1 >= SIZE or board[piece.x - count - 1][piece.y + count + 1] != ''):
+        result.sides_blocked += 1
+
+    return result
+
+
+def get_all_lines(board: List[List[str]], player: str) -> List[Line]:
+    # Simon's function
+    # Takes the current board, and player's character, and
+    # return all lines on the board.
+
+    # First get all pieces of our own's position
+    lines: List[Line]
+    pieces: List[Position]
+
+    lines = []
+    pieces = []
+
+    for i in range(SIZE):
+        for j in range(SIZE):
+            if board[i][j] == player:
+                pieces.append(Position(i,j))
+
+    # Then, for every single pieces on the board, check if it has a line
+    for piece in pieces:
+        # Get the horizontal, vertical, diagonal lines
+        pass
+    pass
+
+    return []
+
+
+# ____________________preexisted functions____________________
 
 def choose_move(board, player):
     """
