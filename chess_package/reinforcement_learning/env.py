@@ -353,23 +353,87 @@ class CustomChessEnv(gym.Env):
         num_actions = len(self.mapper.index_to_action)
         mask = np.zeros(num_actions, dtype=bool)
         # mask = np.zeros(self.action_space.n, dtype=bool)
-        for idx, (fr, to, ab) in enumerate(self.mapper.index_to_action):
-            if ab:
-                if self.abilities_remaining[self.turn].get(ab["name"], False):
-                    if ab["name"] == "shield":
-                        r, c = ab["target"]
-                        p = self.board[r][c]
-                        if p and p.color == self.turn:
-                            mask[idx] = True
-                    else:
-                        mask[idx] = True
+
+        for idx, (fr, to, ability) in enumerate(self.mapper.index_to_action):
+            # Validate move part
+            if fr == (-1, -1) and to == (-1, -1) and ability:
+                # Skill-only action
+                if ability["name"] == "fog":
+                    mask[idx] = self.abilities_remaining[self.turn]["fog"]
+                elif ability["name"] == "pawnReset":
+                    mask[idx] = self.abilities_remaining[self.turn]["pawnReset"]
+                elif ability["name"] == "shield":
+                    r, c = ability["target"]
+                    piece = self.board[r][c]
+                    mask[idx] = (
+                        self.abilities_remaining[self.turn]["shield"]
+                        and piece is not None
+                        and piece.color == self.turn
+                    )
             else:
+                # Validate move
                 fr_r, fr_c = fr
+                to_r, to_c = to
+                if not (0 <= fr_r < 5 and 0 <= fr_c < 5):
+                    continue
                 piece = self.board[fr_r][fr_c]
-                if piece and piece.color == self.turn:
-                    legal_moves = get_legal_moves(self.board, fr, piece)
-                    if to in legal_moves:
-                        target = self.board[to[0]][to[1]]
-                        if not (target and target.shielded):
-                            mask[idx] = True
+                if piece is None or piece.color != self.turn:
+                    continue
+
+                legal_moves = get_legal_moves(self.board, fr, piece)
+                if to not in legal_moves:
+                    continue
+
+                target = self.board[to_r][to_c]
+                if target and target.shielded:
+                    continue  # can't attack shielded
+
+                valid = True
+
+                # Validate ability
+                if ability:
+                    name = ability["name"]
+                    if name == "fog":
+                        valid = self.abilities_remaining[self.turn]["fog"]
+                    elif name == "pawnReset":
+                        valid = self.abilities_remaining[self.turn]["pawnReset"]
+                    elif name == "shield":
+                        if not self.abilities_remaining[self.turn]["shield"]:
+                            valid = False
+                        else:
+                            r, c = ability["target"]
+                            target_piece = self.board[r][c]
+                            valid = (
+                                target_piece is not None
+                                and target_piece.color == self.turn
+                            )
+
+                if valid:
+                    mask[idx] = True
+
         return mask
+
+    # def get_action_mask(self) -> np.ndarray:
+    #     num_actions = len(self.mapper.index_to_action)
+    #     mask = np.zeros(num_actions, dtype=bool)
+    #     # mask = np.zeros(self.action_space.n, dtype=bool)
+    #     for idx, (fr, to, ab) in enumerate(self.mapper.index_to_action):
+    #         if ab:
+    #             if self.abilities_remaining[self.turn].get(ab["name"], False):
+    #                 if ab["name"] == "shield":
+    #                     r, c = ab["target"]
+    #                     p = self.board[r][c]
+    #                     if p and p.color == self.turn:
+    #                         mask[idx] = True
+    #                 else:
+    #                     mask[idx] = True
+    #         else:
+    #             fr_r, fr_c = fr
+    #             piece = self.board[fr_r][fr_c]
+    #             if piece and piece.color == self.turn:
+    #                 legal_moves = get_legal_moves(self.board, fr, piece)
+    #                 if to in legal_moves:
+    #                     target = self.board[to[0]][to[1]]
+    #                     if not (target and target.shielded):
+    #                         mask[idx] = True
+    #     return mask

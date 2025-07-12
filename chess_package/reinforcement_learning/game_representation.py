@@ -6,7 +6,7 @@ class Piece:
         self.type = type  # 'K', 'Q', 'R', 'B', 'P'
         self.color = color  # 'white' or 'black'
         self.shielded = shielded
-        self.last_shielded_turn: int
+        self.last_shielded_turn: int = 0
 
 
 class GameState:
@@ -42,35 +42,55 @@ class ActionMapper:
         self._generate_actions()
 
     def _generate_actions(self):
+        abilities = [
+            None,
+            {"name": "fog", "target": None},
+            {"name": "pawnReset", "target": None},
+        ]
+
         # Move-only actions (from, to)
         for fr in range(5):
             for fc in range(5):
                 for tr in range(5):
                     for tc in range(5):
-                        move = ((fr, fc), (tr, tc), None)
-                        key = self._action_key(move)
-                        self.action_to_index[key] = len(self.index_to_action)
-                        self.index_to_action.append(move)
+                        for ab in abilities:
+                            move = ((fr, fc), (tr, tc), ab)
+                            key = self._action_key(move)
+                            self.action_to_index[key] = len(self.index_to_action)
+                            self.index_to_action.append(move)
 
-        # Abilities
-        abilities = ["fog", "pawnReset"]
-        for name in abilities:
-            key = self._action_key(((-1, -1), (-1, -1), {"name": name, "target": None}))
-            self.action_to_index[key] = len(self.index_to_action)
-            self.index_to_action.append(
-                ((-1, -1), (-1, -1), {"name": name, "target": None})
-            )
+        # Handling shield
+        for fr in range(5):
+            for fc in range(5):
+                for tr in range(5):
+                    for tc in range(5):
+                        for r in range(5):
+                            for c in range(5):
+                                ab = {"name": "shield", "target": (r, c)}
+                                move = ((fr, fc), (tr, tc), ab)
+                                key = self._action_key(move)
+                                self.action_to_index[key] = len(self.index_to_action)
+                                self.index_to_action.append(move)
 
-        # Shield with target
-        for r in range(5):
-            for c in range(5):
-                key = self._action_key(
-                    ((-1, -1), (-1, -1), {"name": "shield", "target": (r, c)})
-                )
-                self.action_to_index[key] = len(self.index_to_action)
-                self.index_to_action.append(
-                    ((-1, -1), (-1, -1), {"name": "shield", "target": (r, c)})
-                )
+        # # Abilities
+        # abilities = ["fog", "pawnReset"]
+        # for name in abilities:
+        #     key = self._action_key(((-1, -1), (-1, -1), {"name": name, "target": None}))
+        #     self.action_to_index[key] = len(self.index_to_action)
+        #     self.index_to_action.append(
+        #         ((-1, -1), (-1, -1), {"name": name, "target": None})
+        #     )
+        #
+        # # Shield with target
+        # for r in range(5):
+        #     for c in range(5):
+        #         key = self._action_key(
+        #             ((-1, -1), (-1, -1), {"name": "shield", "target": (r, c)})
+        #         )
+        #         self.action_to_index[key] = len(self.index_to_action)
+        #         self.index_to_action.append(
+        #             ((-1, -1), (-1, -1), {"name": "shield", "target": (r, c)})
+        #         )
 
     # Encoders & decoders for encoding/decoding the moves
     def _action_key(
