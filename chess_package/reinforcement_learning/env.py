@@ -181,7 +181,7 @@ class CustomChessEnv(gym.Env):
 
             # -- Center Control --
             if 1 <= to_r <= 3 and 1 <= to_c <= 3:
-                reward += 0.02  # reward for moving into center 3x3
+                reward += 0.002  # reward for moving into center 3x3
 
         # self.board[to_r][to_c] = piece
         self.board[to_r][to_c] = Piece(piece.type, piece.color, piece.shielded)

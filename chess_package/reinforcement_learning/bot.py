@@ -43,6 +43,10 @@ def get_raw_env(env: gym.Env) -> CustomChessEnv:
     return cast(CustomChessEnv, env.unwrapped)
 
 
+time_steps = 100000
+model = MaskablePPO.load(f"chess_model_{time_steps}")
+
+
 def load_model(
     board: List[List[Optional[Piece]]],
     turn: str = "white",
@@ -53,9 +57,6 @@ def load_model(
     done: bool = False,
     winner: Optional[str] = None,
 ):
-    time_steps = 100000
-    model = MaskablePPO.load(f"chess_model_{time_steps}")
-
     env = CustomChessEnv()
 
     def mask_fn(env):
@@ -227,50 +228,57 @@ def countBishopPawns(state):
 
 
 def setup_phase(state: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Implement your setup phase strategy here.
+    player_color = state["playerColor"]
+    r1 = 0 if player_color == "white" else 4
+    r2 = 1 if player_color == "white" else 3
+    board = state["board"]
+    step = state["setupStep"]
 
-    Step 1: Place King
-    Step 2: Block opponent tile
-    Step 3: Place 2 Rooks
-    Step 4: Place 2 Bishops and 3 Pawns
+    # Step 1: Place King at center
+    if step == 1:
+        return {"move": {"from": [0, 3], "to": [r1, 2]}}
 
-    Return a dict: {'move': {'from': [...], 'to': [row, col]}}
-    """
-    # TODO: Implement your setup logic
-    r = 0 if state["playerColor"] == "white" else 4
-    r2 = 1 if state["playerColor"] == "white" else 3
+    # Step 2: Block opponent's king column to hinder rook placement
+    elif step == 2:
+        opp_king_col = findOtherKingColumn(state)
+        if opp_king_col != -1:
+            return {"move": {"to": [4 - r2, opp_king_col]}}
+        return {"move": {"to": [4 - r2, 2]}}
 
-    # Step 1
-    if state["setupStep"] == 1:
-        return {"move": {"from": [0, 3], "to": [r, 2]}}
-    # Step 2
-    elif state["setupStep"] == 2:
-        kingPos = findOtherKingColumn(state)
-        return {"move": {"to": [4 - r2, kingPos]}}
-    # Step 3
-    elif state["setupStep"] == 3:
-        kingPos = findOtherKingColumn(state)
-        if (
-            state["board"][r2][kingPos] is None
-            or not state["board"][r2][kingPos]["type"] == "R"
-        ):
-            return {"move": {"to": [r2, kingPos]}}
-        randX = random.randint(0, 4)
-        while randX == kingPos:
-            randX = random.randint(0, 4)
-        return {"move": {"to": [r2, randX]}}
-    # Step 4
-    elif state["setupStep"] == 4:
+    # Step 3: Place two rooks, avoiding blocked square
+    elif step == 3:
+        blocked = state.get("blockedTiles", [])
+        blocked_positions = [tuple(pos) for pos in blocked]
+        king_col = findOtherKingColumn(state)
+
+        # Try placing rook in king's column if not blocked
+        if (r2, king_col) not in blocked_positions and board[r2][king_col] is None:
+            return {"move": {"to": [r2, king_col]}}
+
+        # Otherwise, place in any non-blocked empty spot
+        for c in range(5):
+            if (r2, c) not in blocked_positions and board[r2][c] is None:
+                return {"move": {"to": [r2, c]}}
+
+        # Fallback
+        return {"move": {"to": [r2, 0]}}
+
+    # Step 4: Place 2 bishops and 3 pawns — you pick which piece to place from your bench
+    elif step == 4:
         counts = countBishopPawns(state)
-        for row in {r, r2}:
-            for col in range(0, 4):
-                if state["board"][row][col] is None:
-                    if counts[0] < 2:
-                        return {"move": {"from": [0, 3], "to": [row, col]}}
-                    else:
-                        return {"move": {"from": [0, 4], "to": [row, col]}}
-        return {}
+        num_bishops, num_pawns = counts
+
+        for row in [r1, r2]:
+            for col in range(5):
+                if board[row][col] is None:
+                    if num_bishops < 2:
+                        return {"move": {"from": [0, 3], "to": [row, col]}}  # bishop
+                    elif num_pawns < 3:
+                        return {"move": {"from": [0, 4], "to": [row, col]}}  # pawn
+
+        # If for some reason no placement happened
+        return {"move": {"from": [0, 4], "to": [r2, 0]}}
+
     return {}
 
 
