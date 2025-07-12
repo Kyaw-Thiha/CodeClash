@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+
+import random
 """
 Code Clash Chess Challenge — Python Starter Bot
 
@@ -47,6 +49,37 @@ def write_move(move_data: Dict[str, Any]) -> None:
         json.dump(move_data, f)
 
 
+# vvv Our implementation is below vvv
+
+def findOtherKingColumn(state) -> int:
+    r = 0 if state["playerColor"] == "white" else 4
+    r2 = 1 if state["playerColor"] == "white" else 3
+
+    # Find column of opponent king
+    for row in [r, r2]:
+        for x in range(0, 4):
+            if state["board"][4 - r][x] == None:
+                continue
+            if state["board"][4 - r][x]["type"] == 'K':
+                return x
+    return -1
+
+def countBishopPawns(state):
+    count = [0, 0]
+
+    r = 0 if state["playerColor"] == "white" else 4
+    r2 = 1 if state["playerColor"] == "white" else 3
+
+    for row in [r, r2]:
+        for col in range(0, 4):
+            if state["board"][row][col] == None:
+                continue
+            elif state["board"][row][col]["type"] == "B":
+                count[0] += 1
+            elif state["board"][row][col]["type"] == "P":
+                count[1] += 1
+    return count
+
 def setup_phase(state: Dict[str, Any]) -> Dict[str, Any]:
     """
     Implement your setup phase strategy here.
@@ -59,7 +92,37 @@ def setup_phase(state: Dict[str, Any]) -> Dict[str, Any]:
     Return a dict: {'move': {'from': [...], 'to': [row, col]}}
     """
     # TODO: Implement your setup logic
-    raise NotImplementedError("setup_phase() not implemented yet")
+    r = 0 if state["playerColor"] == "white" else 4
+    r2 = 1 if state["playerColor"] == "white" else 3
+
+    # Step 1
+    if (state["setupStep"] == 1):
+        return {"move": {"from": [0, 3], "to": [r, 2]}}
+    # Step 2
+    elif (state["setupStep"] == 2):
+        kingPos = findOtherKingColumn(state)
+        return {"move": {"to": [4 - r2, kingPos]}}
+    # Step 3
+    elif (state["setupStep"] == 3):
+        kingPos = findOtherKingColumn(state)
+        if state["board"][r2][kingPos] == None or not state["board"][r2][kingPos]["type"] == 'R':
+            return {"move": {"to": [r2, kingPos]}}
+        randX = random.randint(0, 4)
+        while (randX == kingPos):
+            randX = random.randint(0, 4)
+        return {"move": {"to": [r2, randX]}}
+    # Step 4
+    elif (state["setupStep"] == 4):
+        counts = countBishopPawns(state)
+        for row in {r, r2}:
+            for col in range(0, 4):
+                if state["board"][row][col] == None:
+                    if counts[0] < 2:
+                        return {"move": {"from": [0, 3], "to": [row, col]}}
+                    else:
+                        return {"move": {"from": [0, 4], "to": [row, col]}}
+        return {}
+                    
 
 
 def play_phase(state: Dict[str, Any]) -> Dict[str, Any]:
@@ -75,7 +138,7 @@ def play_phase(state: Dict[str, Any]) -> Dict[str, Any]:
     }
     """
     # TODO: Implement your play logic
-    raise NotImplementedError("play_phase() not implemented yet")
+    
 
 
 def main():

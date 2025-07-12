@@ -1,0 +1,98 @@
+{
+  "phase": "play",
+  "playerColor": "white",
+  "board": [
+    [
+      {
+        "type": "B",
+        "color": "white"
+      },
+      {
+        "type": "B",
+        "color": "white"
+      },
+      {
+        "type": "K",
+        "color": "white"
+      },
+      {
+        "type": "P",
+        "color": "white"
+      },
+      null
+    ],
+    [
+      {
+        "type": "R",
+        "color": "white"
+      },
+      {
+        "type": "P",
+        "color": "white"
+      },
+      {
+        "type": "P",
+        "color": "white"
+      },
+      {
+        "type": "R",
+        "color": "white"
+      },
+      null
+    ],
+    [
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      {
+        "type": "P",
+        "color": "black"
+      },
+      {
+        "type": "R",
+        "color": "black"
+      },
+      null,
+      {
+        "type": "B",
+        "color": "black"
+      },
+      null
+    ],
+    [
+      {
+        "type": "K",
+        "color": "black"
+      },
+      {
+        "type": "B",
+        "color": "black"
+      },
+      {
+        "type": "P",
+        "color": "black"
+      },
+      {
+        "type": "R",
+        "color": "black"
+      },
+      {
+        "type": "P",
+        "color": "black"
+      }
+    ]
+  ],
+  "abilitiesRemaining": {
+    "fog": true,
+    "pawnReset": true,
+    "shield": true
+  },
+  "abilitiesActivated": [],
+  "turnNumber": 1,
+  "setupStep": 4,
+  "blockedTiles": []
+}
