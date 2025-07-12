@@ -28,7 +28,7 @@ For rules and move formats, see the `design_doc.md` file provided.
 import json
 import sys
 from typing import Any, Dict
-from Piece import Piece, King, Pawn, Bishop, Rook
+from piece import Piece, King, Pawn, Bishop, Rook
 
 BOARD_SIZE = 5
 
@@ -139,11 +139,22 @@ def makeTurn(frm, toCrd, ability):
                 "ability": {"name": ability[0], "target": ability[1]}
             }
 
+# PRIORITY FUNCTION
 def prioritizeAttackMoves(moves):
+    '''
+    Given list of moves (i.e. list of tuples (moveValue, targetType))
+    Sort most important moves to the front.
+    '''
     sorted = []
 
     for i in range(0, len(moves)):
-        if moves[i][1] == True:
+        if moves[i][1] == "K":
+            sorted.insert(0, i)
+            return
+        # Bishop
+        # Rook
+        # Pawn
+        if moves[i][1] != "none":
             sorted.insert(0, i)
         else:
             sorted.append(i)
@@ -162,6 +173,7 @@ def play_phase(state: Dict[str, Any]) -> Dict[str, Any]:
         'ability': {'name': 'fog' | 'pawnReset' | 'shield' | None, 'target': [row, col] | None}
     }
     """
+
     # TODO: Implement your play logic
     for i in range(0, 25):
         tile = state["board"][i//5][i%5]
@@ -190,6 +202,7 @@ def play_phase(state: Dict[str, Any]) -> Dict[str, Any]:
 
         if len(moves) == 0:
             continue
+
         if isinstance(piece, King):
             fMove = moves[priMoves[0]]
             toCrd = [frm[0] + fMove[0]//3 -1, frm[1] - fMove[0]%3 - 1]
