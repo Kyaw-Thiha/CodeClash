@@ -71,7 +71,7 @@ class Line:
     def __repr__(self) -> str:
         return f"Line(num_pieces={self.num_pieces}, sides_blocked={self.sides_blocked}, positions={self.positions})"
 
-# ____________________Simon defined functions____________________
+# ____________________Simon defined functions for getting all lines____________________
 
 
 def getLineH(piece: Position, board: List[List[str]]) -> Line:
@@ -203,23 +203,109 @@ def get_all_lines(board: List[List[str]], player: str) -> List[Line]:
             lines.append(tempLine)
     return lines 
 
+# ____________________Simon defined functions for making theall lines____________________
 
-# ____________________preexisted functions____________________
+
+def get_opponent(player: str) -> str:
+    return 'O' if player == 'X' else 'X'
+
+
+def find_extension_spot(line: Line, board: List[List[str]]) -> tuple[int, int] | None:
+    # Try to extend the line in either direction if the spot is empty
+    start = line.positions[0]
+    end = line.positions[-1]
+    dx = end.x - start.x
+    dy = end.y - start.y
+
+    length = len(line.positions)
+    if dx != 0:
+        dx //= length - 1
+    if dy != 0:
+        dy //= length - 1
+
+    # Try before start
+    x1 = start.x - dx
+    y1 = start.y - dy
+    if 0 <= x1 < SIZE and 0 <= y1 < SIZE and board[y1][x1] == '':
+        return (y1, x1)
+
+    # Try after end
+    x2 = end.x + dx
+    y2 = end.y + dy
+    if 0 <= x2 < SIZE and 0 <= y2 < SIZE and board[y2][x2] == '':
+        return (y2, x2)
+
+    return None  # No extension possible
+
+
 def choose_move(board, player):
-    """
-    TODO: Implement your move selection logic.
-    Should return a tuple (row, col) from get_valid_moves(board).
-    """
     valid = get_valid_moves(board)
     if not valid:
         raise Exception("No valid moves available")
 
-    lines = get_all_lines(board, player)
-    for line in lines:
-        print(line)
+    player_lines = get_all_lines(board, player)
+    enemy_lines = get_all_lines(board, get_opponent(player))
 
-    # Example stub: always pick the first one
+    # 1. Win immediately
+    for line in player_lines:
+        if line.num_pieces == 4 and line.sides_blocked <= 1:
+            move = find_extension_spot(line, board)
+            if move:
+                return move
+
+    # 2. Block enemy win
+    for line in enemy_lines:
+        if line.num_pieces == 4 and line.sides_blocked <= 1:
+            move = find_extension_spot(line, board)
+            if move:
+                return move
+
+    # 3. Build own lines: Prefer longer lines first
+    for i in range(3, 0, -1):
+        for line in player_lines:
+            if line.num_pieces == i:
+                if line.sides_blocked == 0:
+                    move = find_extension_spot(line, board)
+                    if move:
+                        return move
+        for line in player_lines:
+            if line.num_pieces == i:
+                if line.sides_blocked == 1:
+                    move = find_extension_spot(line, board)
+                    if move:
+                        return move
+
+        # 4. Block enemy lines of size i
+        for line in enemy_lines:
+            if line.num_pieces == i and line.sides_blocked < 2:
+                move = find_extension_spot(line, board)
+                if move:
+                    return move
+
+    # 5. Fallback: First available move
     return valid[0]
+
+# ____________________preexisted functions____________________
+# def choose_move(board, player):
+#     """
+#     TODO: Implement your move selection logic.
+#     Should return a tuple (row, col) from get_valid_moves(board).
+#     """
+#     valid = get_valid_moves(board)
+#     if not valid:
+#         raise Exception("No valid moves available")
+#
+#     player_lines = get_all_lines(board, player)
+#     if player == 'X':
+#         enemy_lines = get_all_lines(board, 'O')
+#     else:
+#         enemy_lines = get_all_lines(board, 'X')
+#
+#     # add more stuffs
+#
+#
+#     # Example stub: always pick the first one
+#     return valid[0]
 
 def main():
     if len(sys.argv) != 2:
