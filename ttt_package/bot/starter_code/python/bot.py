@@ -268,6 +268,14 @@ def choose_move(board, player):
                     move = find_extension_spot(line, board)
                     if move:
                         return move
+        # 4. Block enemy lines of size i with no side blocked
+        for line in enemy_lines:
+            if line.num_pieces == i and line.sides_blocked == 0:
+                move = find_extension_spot(line, board)
+                if move:
+                    return move
+        
+        # 5. Extend player lines of size i with one side blocked
         for line in player_lines:
             if line.num_pieces == i:
                 if line.sides_blocked == 1:
@@ -275,14 +283,15 @@ def choose_move(board, player):
                     if move:
                         return move
 
-        # 4. Block enemy lines of size i
+        # 6. Block enemy lines of size i with one side blocked
         for line in enemy_lines:
-            if line.num_pieces == i and line.sides_blocked < 2:
+            if line.num_pieces == i and line.sides_blocked == 1:
                 move = find_extension_spot(line, board)
                 if move:
                     return move
+        
 
-    # 5. Fallback: Prefer move closest to the center
+    # 7. Fallback: Prefer move closest to the center
     center = SIZE // 2
     valid.sort(key=lambda move: abs(move[0] - center) + abs(move[1] - center))
     return valid[0]
