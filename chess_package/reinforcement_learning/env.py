@@ -153,10 +153,35 @@ class CustomChessEnv(gym.Env):
         if target and target.shielded:
             return -0.3
 
+        PIECE_VALUES = {
+            "K": 0,  # Don't compare king values in trades
+            "Q": 9,
+            "R": 5,
+            "B": 3,
+            "P": 1,
+        }
+
         if self.sophisticated_rewards and target:
-            reward += 0.1  # reward for capturing
+            reward += 0.1  # base capture reward
+
             if target.type == "K":
                 reward += 0.9  # strong bonus for killing king
+            else:
+                my_value = PIECE_VALUES.get(piece.type, 0)
+                their_value = PIECE_VALUES.get(target.type, 0)
+                trade_score = their_value - my_value
+                reward += 0.05 * trade_score  # positive if good trade, negative if bad
+
+        # -- Aggression Reward --
+        if self.sophisticated_rewards:
+            if (piece.color == "white" and to_r < 2) or (
+                piece.color == "black" and to_r > 2
+            ):
+                reward += 0.03  # slight reward for being in enemy half
+
+            # -- Center Control --
+            if 1 <= to_r <= 3 and 1 <= to_c <= 3:
+                reward += 0.02  # reward for moving into center 3x3
 
         # self.board[to_r][to_c] = piece
         self.board[to_r][to_c] = Piece(piece.type, piece.color, piece.shielded)
@@ -169,6 +194,12 @@ class CustomChessEnv(gym.Env):
             piece.type = "Q"
             if self.sophisticated_rewards:
                 reward += 0.2  # reward for promotion
+
+        # -- Useless Move Penalty --
+        if self.sophisticated_rewards and not target and fr == to:
+            reward -= 0.1  # no-op move
+        elif self.sophisticated_rewards and not target:
+            reward -= 0.05  # non-capture, non-special
 
         return reward
 
