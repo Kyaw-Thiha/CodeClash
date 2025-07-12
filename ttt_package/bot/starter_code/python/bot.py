@@ -84,104 +84,90 @@ def getLineH(piece: Position, board: List[List[str]]) -> Line:
     # leftmost piece OR the piece is standalone to the right.
 
     # if current piece is not the leftmost piece, return empty line
-    current: str
-    count: int
-    result: Line
-    result = Line(1, 0, [piece])
     current = board[piece.y][piece.x]
     if(piece.x != 0 and board[piece.y][piece.x - 1] == current):
-        return Line(-1, -1, [])
+        return Line(0, 0, [])
 
+    positions = [piece]
+    sides_blocked = 0
     count = 1
+
     while(piece.x + count < SIZE and board[piece.y][piece.x + count] == current):
-        result.positions.append(Position(piece.x + count, piece.y))
+        positions.append(Position(piece.x + count, piece.y))
         count += 1
 
     if(piece.x == 0 or board[piece.y][piece.x - 1] != ''):
-        result.sides_blocked += 1
+        sides_blocked += 1
     if(piece.x + count >= SIZE - 1 or board[piece.y][piece.x + count + 1] != ''):
-        result.sides_blocked += 1
+        sides_blocked += 1
 
-        result.num_pieces = count
-
-    return result
+    return Line(len(positions), sides_blocked, positions)
 
 def getLineV(piece: Position, board: List[List[str]]) -> Line:
     # Simon's function
     # Same as getLineH except it works for vertical line instead
-    current: str
-    count: int
-    result: Line
-    result = Line(1, 0, [piece])
     current = board[piece.y][piece.x]
     if(piece.y != 0 and board[piece.y - 1][piece.x] == current):
-        return Line(-1, -1, [])
+        return Line(0, 0, [])
 
+
+    positions = [piece]
+    sides_blocked = 0
     count = 1
     while(piece.y + count < SIZE and board[piece.y + count][piece.x] == current):
-        result.positions.append(Position(piece.x, piece.y + count))
+        positions.append(Position(piece.x, piece.y + count))
         count += 1
 
     if(piece.y == 0 or board[piece.y - 1][piece.x] != ''):
-        result.sides_blocked += 1
+        sides_blocked += 1
     if(piece.y + count >= SIZE - 1 or board[piece.y + count + 1][piece.x] != ''):
-        result.sides_blocked += 1
+        sides_blocked += 1
 
-    result.num_pieces = count
-
-    return result
+    return Line(len(positions), sides_blocked, positions)
 
 def getLineD1(piece: Position, board: List[List[str]]) -> Line:
     # Simon's function
     # Same as getLineH except it works for diagonal line top left to bottom right
-    current: str
-    count: int
-    result: Line
-    result = Line(1, 0, [piece])
     current = board[piece.y][piece.x]
     if(piece.x != 0 and piece.y != 0 and board[piece.y - 1][piece.x - 1] == current):
-        return Line(-1, -1, [])
+        return Line(0, 0, [])
 
+    positions = [piece]
+    sides_blocked = 0
     count = 1
     while(piece.x + count < SIZE and piece.y + count < SIZE and board[piece.y + count][piece.x + count] == current):
-        result.positions.append(Position(piece.x + count, piece.y + count))
+        positions.append(Position(piece.x + count, piece.y + count))
         count += 1
 
     if(piece.x == 0 or piece.y == 0 or board[piece.y - 1][piece.x - 1] != ''):
-        result.sides_blocked += 1
+        sides_blocked += 1
     if(piece.x + count >= SIZE - 1 or piece.y + count >= SIZE - 1 or board[piece.y + count + 1][piece.x + count + 1] != ''):
-        result.sides_blocked += 1
+        sides_blocked += 1
 
-    result.num_pieces = count
-
-    return result
+    return Line(len(positions), sides_blocked, positions)
 
 def getLineD2(piece: Position, board: List[List[str]]) -> Line:
     # Simon's function
     # Works for diagonal line bottom-left to top-right (↗)
-    current: str
-    count: int
-    result: Line
-    result = Line(1, 0, [piece])
     current = board[piece.y][piece.x]
 
     # Not bottom-leftmost
     if(piece.x != SIZE - 1 and piece.y != 0 and board[piece.y - 1][piece.x + 1] == current):
-        return Line(-1, -1, [])
-
+        return Line(0, 0, [])
+    
+    positions = [piece]
+    sides_blocked = 0
     count = 1
     while(piece.x - count >= 0 and piece.y + count < SIZE and board[piece.y + count][piece.x - count] == current):
-        result.positions.append(Position(piece.x - count, piece.y + count))
+        positions.append(Position(piece.x - count, piece.y + count))
         count += 1
 
     if(piece.x == SIZE - 1 or piece.y == 0 or board[piece.y - 1][piece.x + 1] != ''):
-        result.sides_blocked += 1
+        sides_blocked += 1
     if(piece.x - count - 1 < 0 or piece.y + count + 1 >= SIZE or board[piece.y + count + 1][piece.x - count - 1] != ''):
-        result.sides_blocked += 1
+        sides_blocked += 1
 
-    result.num_pieces = count
-    
-    return result
+    return Line(len(positions), sides_blocked, positions)
 
 def get_all_lines(board: List[List[str]], player: str) -> List[Line]:
     # Simon's function
@@ -204,22 +190,21 @@ def get_all_lines(board: List[List[str]], player: str) -> List[Line]:
     # Then, for every single pieces on the board, check if it has a line
     for piece in pieces:
         tempLine = getLineH(piece, board)
-        if tempLine.positions != []:
+        if tempLine.num_pieces > 1:
             lines.append(tempLine)
         tempLine = getLineV(piece, board)
-        if tempLine.positions != []:
+        if tempLine.num_pieces > 1:
             lines.append(tempLine)
         tempLine = getLineD1(piece, board)
-        if tempLine.positions != []:
+        if tempLine.num_pieces > 1:
             lines.append(tempLine)
         tempLine = getLineD2(piece, board)
-        if tempLine.positions != []:
+        if tempLine.num_pieces > 1:
             lines.append(tempLine)
     return lines 
 
 
 # ____________________preexisted functions____________________
-
 def choose_move(board, player):
     """
     TODO: Implement your move selection logic.
@@ -229,12 +214,10 @@ def choose_move(board, player):
     if not valid:
         raise Exception("No valid moves available")
 
-    lines: List[Line]
     lines = get_all_lines(board, player)
     for line in lines:
         print(line)
 
-    
     # Example stub: always pick the first one
     return valid[0]
 
