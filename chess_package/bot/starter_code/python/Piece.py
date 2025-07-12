@@ -3,31 +3,37 @@ class Piece:
         self.x = x
         self.y = y
 
-    def getAvailableMoves(self, state) -> list[(int, bool)]:
+    def getAvailableMoves(self, state) -> list[(int, str)]:
+        '''
+        Return a list of all available moves. The list contains
+        tuples in format (moveValue, targetType). 
+        The meaning of moveValue is described in the docstring of subclasses.
+        '''
         return []
 
 
 class King(Piece):
-    def getAvailableMoves(self, state) -> list[(int, bool)]:
+    def getAvailableMoves(self, state) -> list[(int, str)]:
         '''
         King available moves:
         - 0-9 (excluding 4): tiles row-wise from top-left
         '''
         availableMoves = []
         for i in range(0, 9):
+            tile = state["board"][self.y + i//3 - 1][self.x - i%3 - 1]
             if (i == 4 
                 or not 0 <= self.x - i%3 - 1 <= 4 
                 or not 0 <= self.y + i//3  - 1<= 4
-                or (state["board"][self.y + i//3 - 1][self.x - i%3 - 1] != None
-                    and state["board"][self.y + i//3 - 1][self.x - i%3 - 1]["color"] == state["playerColor"])):
+                or (tile != None and tile["color"] == state["playerColor"])):
                 continue
-            b = (state["board"][self.y + i//3 - 1][self.x - i%3 - 1] != None 
-                 and state["board"][self.y + i//3 - 1][self.x - i%3- 1]["color"] != state["playerColor"])
+            b = "none"
+            if (tile != None and tile["color"] != state["playerColor"]):
+                b = tile["type"]
             availableMoves.append((i, b))
         return availableMoves
     
 class Pawn(Piece):
-    def getAvailableMoves(self, state) -> list[(int, bool)]:
+    def getAvailableMoves(self, state) -> list[(int, str)]:
         '''
         Pawn available moves:
         - 0: up-left attack
@@ -40,17 +46,17 @@ class Pawn(Piece):
             if (self.x > 0 
                 and state["board"][self.y+inc][self.x-1] != None 
                 and state["board"][self.y+inc][self.x-1]["color"] != state["playerColor"]):
-                availableMoves.append((0, True))
+                availableMoves.append((0, state["board"][self.y+inc][self.x-1]["type"]))
             if (state["board"][self.y+inc][self.x] == None):
-                availableMoves.append((1, False))
+                availableMoves.append((1, "none"))
             if (self.x < 4 
                 and state["board"][self.y+inc][self.x+1] != None
                 and state["board"][self.y+inc][self.x+1]["color"] != state["playerColor"]):
-                availableMoves.append((2, True))
+                availableMoves.append((2, ["board"][self.y+inc][self.x+1]["type"]))
         return availableMoves
     
 class Bishop(Piece):
-    def getAvailableMoves(self, state) -> list[(int, bool)]:
+    def getAvailableMoves(self, state) -> list[(int, str)]:
         '''
         Bishop available moves:
         - list of 4 tuples (n, b): (# of tiles moveable in direction clockwise
@@ -59,7 +65,7 @@ class Bishop(Piece):
         availableMoves = []
         for inc in [(-1, -1), (1, -1), (1, 1), (-1, 1)]:
             n = 0
-            b = False
+            b = "none"
             cX = self.x + inc[0]
             cY = self.y + inc[1]
             while (0 <= cX <= 4 
@@ -74,13 +80,13 @@ class Bishop(Piece):
                 and state["board"][cY][cX] != None
                 and state["board"][cY][cX]["color"] != state["playerColor"]):
                 n += 1
-                b = True
+                b = state["board"][cY][cX]["type"]
             availableMoves.append((n, b))
             
         return availableMoves
 
 class Rook(Piece):
-    def getAvailableMoves(self, state) -> list[(int, bool)]:
+    def getAvailableMoves(self, state) -> list[(int, str)]:
         '''
         Rook available moves:
         - list of 4 tuples (n, b): (# of tiles moveable in direction clockwise
@@ -89,7 +95,7 @@ class Rook(Piece):
         availableMoves = []
         for inc in [(0, -1), (1, 0), (0, 1), (-1, 0)]:
             n = 0
-            b = False
+            b = "none"
             cX = self.x + inc[0]
             cY = self.y + inc[1]
             while (0 <= cX <= 4 
@@ -104,7 +110,7 @@ class Rook(Piece):
                 and state["board"][cY][cX] != None 
                 and state["board"][cY][cX]["color"] != state["playerColor"]):
                 n += 1
-                b = True
+                b = state["board"][cY][cX]["type"]
             availableMoves.append((n, b))
         
         return availableMoves
