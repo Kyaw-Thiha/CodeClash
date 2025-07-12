@@ -282,7 +282,9 @@ def choose_move(board, player):
                 if move:
                     return move
 
-    # 5. Fallback: First available move
+    # 5. Fallback: Prefer move closest to the center
+    center = SIZE // 2
+    valid.sort(key=lambda move: abs(move[0] - center) + abs(move[1] - center))
     return valid[0]
 
 # ____________________preexisted functions____________________
