@@ -9,6 +9,7 @@ from game_representation import Piece, GameState, Move, ActionMapper
 from game_mechanics import get_legal_moves
 
 import random
+from typing import Any
 
 # def _place_pieces(self):
 #     """
@@ -47,8 +48,9 @@ class CustomChessEnv(gym.Env):
         self.sophisticated_rewards = sophisticated_rewards
         self.reset()
 
-    def reset(self):
+    def reset(self, seed: int = 42, options: dict[str, Any] = {}):
         self.board = [[None for _ in range(5)] for _ in range(5)]
+        self.rng = random.Random(seed)
         self.turn = "white"
         self.done = False
         self.winner = None
@@ -59,36 +61,32 @@ class CustomChessEnv(gym.Env):
             "black": {"fog": True, "pawnReset": True, "shield": True},
         }
         self._place_pieces()
-        return self._get_obs()
+        return self._get_obs(), {}
 
     def _place_pieces(self):
         piece_order = ["K"] + ["R"] * 2 + ["B"] * 2 + ["P"] * 3
-        self.rng.shuffle(piece_order)
-        idx = 0
-        for row in [4, 3]:
-            for col in range(5):
-                if idx < len(piece_order):
-                    p = piece_order[idx]
-                    self.board[row][col] = Piece(p, "white")
-                    if p == "P":
-                        self.pawn_starts["white"].append((row, col))
-                    idx += 1
-        self.rng.shuffle(piece_order)
-        idx = 0
-        for row in [0, 1]:
-            for col in range(5):
-                if idx < len(piece_order):
-                    p = piece_order[idx]
-                    self.board[row][col] = Piece(p, "black")
-                    if p == "P":
-                        self.pawn_starts["black"].append((row, col))
-                    idx += 1
 
-    def step(self, action_idx):
+        positions = [(r, c) for r in [4, 3] for c in range(5)]
+        self.rng.shuffle(positions)
+        for pos, piece in zip(positions, piece_order):
+            r, c = pos
+            self.board[r][c] = Piece(piece, "white")
+            if piece == "P":
+                self.pawn_starts["white"].append((r, c))
+
+        positions = [(r, c) for r in [1, 0] for c in range(5)]
+        self.rng.shuffle(positions)
+        for pos, piece in zip(positions, piece_order):
+            r, c = pos
+            self.board[r][c] = Piece(piece, "black")
+            if piece == "P":
+                self.pawn_starts["black"].append((r, c))
+
+    def step(self, action: int):
         if self.done:
             return self._get_obs(), 0.0, True, {}
 
-        move = self.mapper.decode(action_idx)
+        move = self.mapper.decode(action)
         reward = self._apply_move(move)
 
         if self._check_win():
@@ -98,7 +96,7 @@ class CustomChessEnv(gym.Env):
         self._decrement_effects()
         self.turn = "black" if self.turn == "white" else "white"
         self.turn_counter += 1
-        return self._get_obs(), reward, self.done, {}
+        return self._get_obs(), reward, self.done, False, {}
 
     def _apply_move(self, move: Move):
         reward = 0.0
