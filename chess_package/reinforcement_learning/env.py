@@ -119,11 +119,13 @@ class CustomChessEnv(gym.Env):
             if name == "fog" and self.abilities_remaining[self.turn]["fog"]:
                 self.fog_turns[self.turn] = 3
                 self.abilities_remaining[self.turn]["fog"] = False
+                reward += self._reward_fog(move)
             elif (
                 name == "pawnReset" and self.abilities_remaining[self.turn]["pawnReset"]
             ):
                 self._reset_pawns()
                 self.abilities_remaining[self.turn]["pawnReset"] = False
+                reward += self._reward_pawn_reset(move)
             elif name == "shield" and self.abilities_remaining[self.turn]["shield"]:
                 r, c = move.ability["target"]
                 piece = self.board[r][c]
@@ -131,7 +133,8 @@ class CustomChessEnv(gym.Env):
                     piece.shielded = True
                     piece.last_shielded_turn = self.turn_counter
                     self.abilities_remaining[self.turn]["shield"] = False
-            return reward
+                reward += self._reward_sheld(move)
+            # return reward
 
         fr, to = move.from_pos, move.to_pos
         fr_r, fr_c = fr
@@ -159,11 +162,92 @@ class CustomChessEnv(gym.Env):
         self.board[to_r][to_c] = Piece(piece.type, piece.color, piece.shielded)
         self.board[fr_r][fr_c] = None
 
-        if piece.type == "P" and (to_r == 0 if piece.color == "black" else to_r == 4):
+        if piece.type == "P" and (
+            (piece.color == "white" and to_r == 0)
+            or (piece.color == "black" and to_r == 4)
+        ):
             piece.type = "Q"
             if self.sophisticated_rewards:
                 reward += 0.2  # reward for promotion
 
+        return reward
+
+    def _reward_fog(self, move):
+        """
+        Give reward based on how many units are unexposed through the fog
+        """
+        reward = 0.0
+        if move.ability["name"] == "fog":
+            exposed_units = 0
+            for r in range(5):
+                for c in range(5):
+                    p = self.board[r][c]
+                    if p and p.color == self.turn:
+                        for enemy_r in range(5):
+                            for enemy_c in range(5):
+                                enemy = self.board[enemy_r][enemy_c]
+                                if enemy and enemy.color != self.turn:
+                                    if (r, c) in get_legal_moves(
+                                        self.board, (enemy_r, enemy_c), enemy
+                                    ):
+                                        exposed_units += 1
+                                        break
+            if exposed_units >= 2:
+                reward += 0.3  # used wisely
+            else:
+                reward -= 0.2  # likely wasted
+        return reward
+
+    def _reward_pawn_reset(self, move):
+        """
+        Give reward on how many pawns are effected
+        """
+        reward = 0.0
+        if move.ability["name"] == "pawnReset":
+            pawn_count_before = sum(
+                1
+                for r in range(5)
+                for c in range(5)
+                if isinstance((piece := self.board[r][c]), Piece)
+                and piece.color == self.turn
+                and piece.type == "P"
+            )
+            reset_pos = self.pawn_starts[self.turn]
+            reset_count = sum(1 for r, c in reset_pos if self.board[r][c] is None)
+
+            if reset_count >= 2:
+                reward += 0.4  # good regroup
+            elif pawn_count_before <= 1:
+                reward += 0.3  # emergency recover
+            else:
+                reward -= 0.2  # maybe wasted
+        return reward
+
+    def _reward_sheld(self, move):
+        """
+        Give reward if the shield power saves a specific unit.
+        Higher reward if the saved unit is important
+        """
+        reward = 0.0
+        if move.ability["name"] == "shield":
+            r, c = move.ability["target"]
+            target_piece = self.board[r][c]
+            under_threat = False
+            if target_piece and target_piece.color == self.turn:
+                for er in range(5):
+                    for ec in range(5):
+                        enemy = self.board[er][ec]
+                        if enemy and enemy.color != self.turn:
+                            if (r, c) in get_legal_moves(self.board, (er, ec), enemy):
+                                under_threat = True
+                                break
+
+                if under_threat:
+                    reward += 0.3  # good use
+                    if target_piece.type in ["K", "Q", "R"]:
+                        reward += 0.2  # high-value unit saved
+                else:
+                    reward -= 0.2  # wasted
         return reward
 
     def _decrement_effects(self):
