@@ -1,34 +1,18 @@
 {
   "phase": "play",
-  "playerColor": "white",
+  "playerColor": "black",
   "board": [
     [
       {
+        "type": "K",
+        "color": "white"
+      },
+      {
         "type": "B",
         "color": "white"
       },
       null,
       null,
-      {
-        "type": "P",
-        "color": "white"
-      },
-      null
-    ],
-    [
-      {
-        "type": "K",
-        "color": "white"
-      },
-      {
-        "type": "P",
-        "color": "white"
-      },
-      null,
-      {
-        "type": "P",
-        "color": "white"
-      },
       null
     ],
     [
@@ -38,19 +22,9 @@
         "type": "R",
         "color": "white"
       },
-      null,
       {
-        "type": "R",
-        "color": "black"
-      }
-    ],
-    [
-      null,
-      null,
-      null,
-      {
-        "type": "R",
-        "color": "black"
+        "type": "P",
+        "color": "white"
       },
       {
         "type": "B",
@@ -59,16 +33,45 @@
     ],
     [
       {
-        "type": "P",
+        "type": "R",
         "color": "black"
       },
+      {
+        "type": "P",
+        "color": "white"
+      },
+      null,
+      null,
+      null
+    ],
+    [
+      null,
       null,
       null,
       {
-        "type": "K",
+        "type": "P",
         "color": "black"
       },
-      null
+      {
+        "type": "K",
+        "color": "black"
+      }
+    ],
+    [
+      null,
+      {
+        "type": "B",
+        "color": "black"
+      },
+      null,
+      {
+        "type": "P",
+        "color": "black"
+      },
+      {
+        "type": "R",
+        "color": "black"
+      }
     ]
   ],
   "abilitiesRemaining": {
@@ -77,7 +80,7 @@
     "shield": true
   },
   "abilitiesActivated": [],
-  "turnNumber": 19,
+  "turnNumber": 22,
   "setupStep": 4,
   "blockedTiles": []
 }

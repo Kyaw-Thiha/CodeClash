@@ -91,14 +91,13 @@ class Pawn(Piece):
         availableMoves = []
         inc = -1 if state["playerColor"] == "black" else 1
         if 0 <= self.y + inc <= 4:
-            if (state["board"][self.y+inc][self.x] != None
-                and state["board"][self.y+inc][self.x]["color"] != state["playerColor"]):
+            if (state["board"][self.y+inc][self.x] == None):
                 availableMoves.append((1, False))
-            if (self.x > 0 
+            elif (self.x > 0 
                 and state["board"][self.y+inc][self.x-1] != None 
                 and state["board"][self.y+inc][self.x-1]["color"] != state["playerColor"]):
                 availableMoves.append((0, True))
-            if (self.x < 4 
+            elif (self.x < 4 
                 and state["board"][self.y+inc][self.x+1] != None
                 and state["board"][self.y+inc][self.x+1]["color"] != state["playerColor"]):
                 availableMoves.append((2, True))
@@ -290,12 +289,14 @@ def play_phase(state: Dict[str, Any]) -> Dict[str, Any]:
             continue
         if isinstance(piece, King):
             toCrd = [fromCrd[0] + moves[0][0]//3 -1, fromCrd[1] - moves[0][0]%3 - 1]
-            
             return makeTurn(fromCrd, toCrd, (None, None))
+        
         elif isinstance(piece, Pawn):
-            crds = [[fromCrd[0]-1, fromCrd[1]-1], [fromCrd[0]-1, fromCrd[1]], [fromCrd[0]-1, fromCrd[1]+1]]
+            inc = -1 if state["playerColor"] == "black" else 1
+            crds = [[fromCrd[0] + inc, fromCrd[1]-1], [fromCrd[0] + inc, fromCrd[1]], [fromCrd[0] + inc, fromCrd[1]+1]]
             toCrd = crds[moves[0][0]]
             return makeTurn(fromCrd, toCrd, (None, None))
+        
         elif isinstance(piece, Bishop):
             inc = []
             for dir in range(0, 4):
