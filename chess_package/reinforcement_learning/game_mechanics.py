@@ -13,18 +13,34 @@ def get_legal_moves(board, position, piece):
         "P": [(1, 0)] if piece.color == "white" else [(-1, 0)],
     }
 
-    for dr, dc in directions[piece.type]:
-        for step in range(1, 2 if piece.type in ["K", "P"] else 5):
-            nr, nc = r + dr * step, c + dc * step
-            if not on_board(nr, nc):
-                break
-            target = board[nr][nc]
-            if target is None:
-                moves.append((nr, nc))
-            else:
-                if target.color != piece.color:
+    # Pawn Movement
+    if piece.type == "P":
+        direction = -1 if piece.color == "white" else 1
+        # Forward move
+        nr = r + direction
+        if 0 <= nr < 5 and board[nr][c] is None:
+            moves.append((nr, c))
+
+        # Diagonal capture
+        for dc in [-1, 1]:
+            nc = c + dc
+            if 0 <= nr < 5 and 0 <= nc < 5:
+                target = board[nr][nc]
+                if target and target.color != piece.color:
                     moves.append((nr, nc))
-                break
+    else:
+        for dr, dc in directions[piece.type]:
+            for step in range(1, 2 if piece.type in ["K"] else 5):
+                nr, nc = r + dr * step, c + dc * step
+                if not on_board(nr, nc):
+                    break
+                target = board[nr][nc]
+                if target is None:
+                    moves.append((nr, nc))
+                else:
+                    if target.color != piece.color:
+                        moves.append((nr, nc))
+                    break
     return moves
 
 

@@ -4,6 +4,7 @@ from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
 from stable_baselines3.common.monitor import load_results
 from stable_baselines3.common.results_plotter import ts2xy
+from stable_baselines3.common.monitor import Monitor
 
 from env import CustomChessEnv
 
@@ -12,6 +13,7 @@ def evaluate(time_steps: int):
     # Reload the saved model
     model = PPO.load(f"chess_model_{time_steps}")
     env = CustomChessEnv()
+    env = Monitor(env, filename="./tensorboard_logs/")
 
     # Evaluate with deterministic policy
     mean_reward, std_reward = evaluate_policy(
@@ -33,3 +35,4 @@ def plot_rewards(log_dir):
 
 if __name__ == "__main__":
     plot_rewards("./tensorboard_logs")
+    # evaluate(100000)

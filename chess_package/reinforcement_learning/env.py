@@ -11,6 +11,7 @@ from game_mechanics import get_legal_moves
 import random
 from typing import Any, Optional, List
 
+
 # def _place_pieces(self):
 #     """
 #     A function to place the piece at the start of the game
@@ -143,10 +144,11 @@ class CustomChessEnv(gym.Env):
 
         legal_moves = get_legal_moves(self.board, fr, piece)
         if to not in legal_moves:
-            return 0.0
+            # return 0.0
+            return -0.3
 
         if target and target.shielded:
-            return 0.0
+            return -0.3
 
         if self.sophisticated_rewards and target:
             reward += 0.1  # reward for capturing
@@ -207,6 +209,7 @@ class CustomChessEnv(gym.Env):
         type_to_plane = {"K": 0, "Q": 1, "R": 2, "B": 3, "P": 4}
         visible = np.zeros((5, 5), dtype=bool)
 
+        # Handle fog mechanics
         if self.fog_turns["black" if self.turn == "white" else "white"] > 0:
             for r in range(5):
                 for c in range(5):
@@ -218,6 +221,7 @@ class CustomChessEnv(gym.Env):
         else:
             visible[:, :] = True
 
+        # Populating units
         for r in range(5):
             for c in range(5):
                 piece = self.board[r][c]
@@ -228,3 +232,59 @@ class CustomChessEnv(gym.Env):
                     obs[plane][r][c] = 1
 
         return obs
+
+    def set_board(
+        self,
+        board: List[List[Optional[Piece]]],
+        turn: str = "white",
+        is_first_turn: bool = False,
+    ):
+        """
+        Replace the current board with a custom board state.
+        Assumes board is a 5x5 list of Piece or None.
+        """
+        self.board = board
+        self.turn = turn
+        self.done = False
+        self.winner = None
+        self.turn_counter = 0
+        self.fog_turns = {"white": 0, "black": 0}
+        self.abilities_remaining = {
+            "white": {"fog": True, "pawnReset": True, "shield": True},
+            "black": {"fog": True, "pawnReset": True, "shield": True},
+        }
+        self.pawn_starts = {"white": [], "black": []}
+
+        if is_first_turn:
+            # Re-calculate pawn start positions
+            for r in range(5):
+                for c in range(5):
+                    p = board[r][c]
+                    if p and p.type == "P":
+                        self.pawn_starts[p.color].append((r, c))
+        return self._get_obs()
+
+    def get_action_mask(self) -> np.ndarray:
+        num_actions = len(self.mapper.index_to_action)
+        mask = np.zeros(num_actions, dtype=bool)
+        # mask = np.zeros(self.action_space.n, dtype=bool)
+        for idx, (fr, to, ab) in enumerate(self.mapper.index_to_action):
+            if ab:
+                if self.abilities_remaining[self.turn].get(ab["name"], False):
+                    if ab["name"] == "shield":
+                        r, c = ab["target"]
+                        p = self.board[r][c]
+                        if p and p.color == self.turn:
+                            mask[idx] = True
+                    else:
+                        mask[idx] = True
+            else:
+                fr_r, fr_c = fr
+                piece = self.board[fr_r][fr_c]
+                if piece and piece.color == self.turn:
+                    legal_moves = get_legal_moves(self.board, fr, piece)
+                    if to in legal_moves:
+                        target = self.board[to[0]][to[1]]
+                        if not (target and target.shielded):
+                            mask[idx] = True
+        return mask
