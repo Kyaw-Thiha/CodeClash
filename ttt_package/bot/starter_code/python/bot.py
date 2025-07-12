@@ -237,24 +237,6 @@ def find_extension_spot(line: Line, board: List[List[str]]) -> tuple[int, int] |
 
     return None  # No extension possible
 
-def evaluate_potential_move(board, row, col, player) -> tuple[int, int]:
-    """
-    Simulate placing a piece at (row, col), and return:
-    - total number of new lines of length ≥ 2
-    - maximum line length created
-    """
-    temp_board = [r.copy() for r in board]
-    temp_board[row][col] = player
-    lines = get_all_lines(temp_board, player)
-
-    # Count only lines that include the move we just made
-    new_lines = [line for line in lines if any(p.x == col and p.y == row for p in line.positions)]
-
-    total_new_lines = len(new_lines)
-    max_line_len = max((line.num_pieces for line in new_lines), default=0)
-
-    return (total_new_lines, max_line_len)
-
 
 def choose_move(board, player):
     valid = get_valid_moves(board)
@@ -278,36 +260,38 @@ def choose_move(board, player):
             if move:
                 return move
 
-    # 3–6. Strategic move selection with scoring
-    best_move = None
-    best_score = (-1, -1)  # (number of lines created, max line length)
-
+    # 3. Build own lines: Prefer longer lines first
     for i in range(3, 0, -1):
-        # Try extending own lines
         for line in player_lines:
-            if line.num_pieces == i and line.sides_blocked <= 1:
-                move = find_extension_spot(line, board)
-                if move:
-                    score = evaluate_potential_move(board, move[0], move[1], player)
-                    if score > best_score:
-                        best_score = score
-                        best_move = move
-
-        # Try blocking enemy open lines
+            if line.num_pieces == i:
+                if line.sides_blocked == 0:
+                    move = find_extension_spot(line, board)
+                    if move:
+                        return move
+        # 4. Block enemy lines of size i with no side blocked
         for line in enemy_lines:
-            if line.num_pieces == i and line.sides_blocked <= 1:
+            if line.num_pieces == i and line.sides_blocked == 0:
                 move = find_extension_spot(line, board)
                 if move:
-                    score = evaluate_potential_move(board, move[0], move[1], player)
-                    if score > best_score:
-                        best_score = score
-                        best_move = move
+                    return move
+        
+        # 5. Extend player lines of size i with one side blocked
+        for line in player_lines:
+            if line.num_pieces == i:
+                if line.sides_blocked == 1:
+                    move = find_extension_spot(line, board)
+                    if move:
+                        return move
 
-    # 7. Play the best scoring move if found
-    if best_move:
-        return best_move
+        # 6. Block enemy lines of size i with one side blocked
+        for line in enemy_lines:
+            if line.num_pieces == i and line.sides_blocked == 1:
+                move = find_extension_spot(line, board)
+                if move:
+                    return move
+        
 
-    # 8. Fallback: Prefer move closest to the center
+    # 7. Fallback: Prefer move closest to the center
     center = SIZE // 2
     valid.sort(key=lambda move: abs(move[0] - center) + abs(move[1] - center))
     return valid[0]
