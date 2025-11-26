@@ -1,0 +1,53 @@
+{
+  "phase": "setup",
+  "playerColor": "black",
+  "board": [
+    [
+      null,
+      null,
+      null,
+      {
+        "type": "K",
+        "color": "white"
+      },
+      null
+    ],
+    [
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    [
+      null,
+      null,
+      null,
+      null,
+      null
+    ]
+  ],
+  "abilitiesRemaining": {
+    "fog": true,
+    "pawnReset": true,
+    "shield": true
+  },
+  "abilitiesActivated": [],
+  "turnNumber": 1,
+  "setupStep": 1,
+  "blockedTiles": []
+}
