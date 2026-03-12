@@ -1,3 +1,12 @@
+'''
+Update: 2024-06-01
+
+This file contains the Piece class and its subclasses.
+The Piece class is structured to be used in a Strategy design pattern,
+where the target strategy is getAvailableMoves().
+Subclasses of Piece (King, Pawn, Bishop, Rook) override getAvailableMoves()
+to determine possible chess moves based on the the rules of chess.
+'''
 class Piece:
     def __init__(self, x, y):
         self.x = x

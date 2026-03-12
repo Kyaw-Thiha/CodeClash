@@ -143,7 +143,10 @@ def makeTurn(frm, toCrd, ability):
 def prioritizeAttackMoves(moves):
     '''
     Given list of moves (i.e. list of tuples (moveValue, targetType))
-    Sort most important moves to the front.
+    Moves are sorted by priority sorted in the following order:
+    1. Moves that attack the opponent's King
+    2. Moves that attack other pieces (Bishop, Rook, Pawn)
+    3. Other moves
     '''
     sorted = []
 
@@ -200,27 +203,24 @@ def play_phase(state: Dict[str, Any]) -> Dict[str, Any]:
         moves = piece.getAvailableMoves(state)
         priMoves = prioritizeAttackMoves(moves)
 
+        # Create a returnable move for the bot based on piece type
         if len(moves) == 0:
             continue
-
         if isinstance(piece, King):
             fMove = moves[priMoves[0]]
             toCrd = [frm[0] + fMove[0]//3 -1, frm[1] - fMove[0]%3 - 1]
             return makeTurn(frm, toCrd, (None, None))
-        
         elif isinstance(piece, Pawn):
             inc = -1 if state["playerColor"] == "black" else 1
             crds = [[frm[0] + inc, frm[1]-1], [frm[0] + inc, frm[1]], [frm[0] + inc, frm[1]+1]]
             toCrd = crds[moves[priMoves[0]][0]]
             return makeTurn(frm, toCrd, (None, None))
-        
         elif isinstance(piece, Bishop):
             inc = []
             for i in priMoves:
                 n = moves[i][0]
                 if n == 0:
                     continue
-
                 if i == 0:
                     inc = [-n, -n]
                 elif i == 1:
@@ -229,18 +229,14 @@ def play_phase(state: Dict[str, Any]) -> Dict[str, Any]:
                     inc = [n, n]
                 elif i == 3:
                     inc = [n, -n]
-
                 toCrd = [frm[0] + inc[0], frm[1] + inc[1]]
-                
-                return makeTurn(frm, toCrd, (None, None))
-            
+                return makeTurn(frm, toCrd, (None, None))   
         elif isinstance(piece, Rook):
             inc = []
             for i in priMoves:
                 n = moves[i][0]
                 if n == 0:
                     continue
-
                 if i == 0:
                     inc = [-n, 0]
                 elif i == 1:
@@ -250,7 +246,6 @@ def play_phase(state: Dict[str, Any]) -> Dict[str, Any]:
                 elif i == 3:
                     inc = [0, -n]
                 toCrd = [frm[0] + inc[0], frm[1] + inc[1]]
-
                 return makeTurn(frm, toCrd, (None, None))
         
     return makeTurn(frm, toCrd, (None, None))
