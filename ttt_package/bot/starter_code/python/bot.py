@@ -71,7 +71,7 @@ class Line:
     def __repr__(self) -> str:
         return f"Line(num_pieces={self.num_pieces}, sides_blocked={self.sides_blocked}, positions={self.positions})"
 
-# ____________________Simon defined functions____________________
+# ____________________Simon defined functions for getting all lines____________________
 
 
 def getLineH(piece: Position, board: List[List[str]]) -> Line:
@@ -84,97 +84,90 @@ def getLineH(piece: Position, board: List[List[str]]) -> Line:
     # leftmost piece OR the piece is standalone to the right.
 
     # if current piece is not the leftmost piece, return empty line
-    current: str
-    count: int
-    result: Line
-    result = Line(1, 0, [piece])
-    current = board[piece.x][piece.y]
-    if(piece.x != 0 and board[piece.x - 1][piece.y] == current):
-        return Line(-1, -1, [])
+    current = board[piece.y][piece.x]
+    if(piece.x != 0 and board[piece.y][piece.x - 1] == current):
+        return Line(0, 0, [])
 
+    positions = [piece]
+    sides_blocked = 0
     count = 1
-    while(piece.x + count < SIZE and board[piece.x + count][piece.y] == current):
-        result.positions.append(Position(piece.x + count, piece.y))
+
+    while(piece.x + count < SIZE and board[piece.y][piece.x + count] == current):
+        positions.append(Position(piece.x + count, piece.y))
         count += 1
 
-    if(piece.x == 0 or board[piece.x - 1][piece.y] != ''):
-        result.sides_blocked += 1
-    if(piece.x + count >= SIZE - 1 or board[piece.x + count + 1][piece.y] != ''):
-        result.sides_blocked += 1
+    if(piece.x == 0 or board[piece.y][piece.x - 1] != ''):
+        sides_blocked += 1
+    if(piece.x + count >= SIZE - 1 or board[piece.y][piece.x + count + 1] != ''):
+        sides_blocked += 1
 
-    return result
+    return Line(len(positions), sides_blocked, positions)
 
 def getLineV(piece: Position, board: List[List[str]]) -> Line:
     # Simon's function
     # Same as getLineH except it works for vertical line instead
-    current: str
-    count: int
-    result: Line
-    result = Line(1, 0, [piece])
-    current = board[piece.x][piece.y]
-    if(piece.y != 0 and board[piece.x][piece.y - 1] == current):
-        return Line(-1, -1, [])
+    current = board[piece.y][piece.x]
+    if(piece.y != 0 and board[piece.y - 1][piece.x] == current):
+        return Line(0, 0, [])
 
+
+    positions = [piece]
+    sides_blocked = 0
     count = 1
-    while(piece.y + count < SIZE and board[piece.x][piece.y + count] == current):
-        result.positions.append(Position(piece.x, piece.y + count))
+    while(piece.y + count < SIZE and board[piece.y + count][piece.x] == current):
+        positions.append(Position(piece.x, piece.y + count))
         count += 1
 
-    if(piece.y == 0 or board[piece.x][piece.y - 1] != ''):
-        result.sides_blocked += 1
-    if(piece.y + count >= SIZE - 1 or board[piece.x][piece.y + count + 1] != ''):
-        result.sides_blocked += 1
-    
-    return result
+    if(piece.y == 0 or board[piece.y - 1][piece.x] != ''):
+        sides_blocked += 1
+    if(piece.y + count >= SIZE - 1 or board[piece.y + count + 1][piece.x] != ''):
+        sides_blocked += 1
+
+    return Line(len(positions), sides_blocked, positions)
 
 def getLineD1(piece: Position, board: List[List[str]]) -> Line:
     # Simon's function
     # Same as getLineH except it works for diagonal line top left to bottom right
-    current: str
-    count: int
-    result: Line
-    result = Line(1, 0, [piece])
-    current = board[piece.x][piece.y]
-    if(piece.x != 0 and piece.y != 0 and board[piece.x - 1][piece.y - 1] == current):
-        return Line(-1, -1, [])
+    current = board[piece.y][piece.x]
+    if(piece.x != 0 and piece.y != 0 and board[piece.y - 1][piece.x - 1] == current):
+        return Line(0, 0, [])
 
+    positions = [piece]
+    sides_blocked = 0
     count = 1
-    while(piece.x + count < SIZE and piece.y + count < SIZE and board[piece.x + count][piece.y + count] == current):
-        result.positions.append(Position(piece.x + count, piece.y + count))
+    while(piece.x + count < SIZE and piece.y + count < SIZE and board[piece.y + count][piece.x + count] == current):
+        positions.append(Position(piece.x + count, piece.y + count))
         count += 1
 
-    if(piece.x == 0 or piece.y == 0 or board[piece.x - 1][piece.y - 1] != ''):
-        result.sides_blocked += 1
-    if(piece.x + count >= SIZE - 1 or piece.y + count >= SIZE - 1 or board[piece.x + count + 1][piece.y + count + 1] != ''):
-        result.sides_blocked += 1
-    
-    return result
+    if(piece.x == 0 or piece.y == 0 or board[piece.y - 1][piece.x - 1] != ''):
+        sides_blocked += 1
+    if(piece.x + count >= SIZE - 1 or piece.y + count >= SIZE - 1 or board[piece.y + count + 1][piece.x + count + 1] != ''):
+        sides_blocked += 1
 
+    return Line(len(positions), sides_blocked, positions)
 
 def getLineD2(piece: Position, board: List[List[str]]) -> Line:
     # Simon's function
     # Works for diagonal line bottom-left to top-right (↗)
-    current: str
-    count: int
-    result: Line
-    result = Line(1, 0, [piece])
-    current = board[piece.x][piece.y]
-    
-    if(piece.x != SIZE - 1 and piece.y != 0 and board[piece.x + 1][piece.y - 1] == current):
-        return Line(-1, -1, [])
+    current = board[piece.y][piece.x]
 
+    # Not bottom-leftmost
+    if(piece.x != SIZE - 1 and piece.y != 0 and board[piece.y - 1][piece.x + 1] == current):
+        return Line(0, 0, [])
+    
+    positions = [piece]
+    sides_blocked = 0
     count = 1
-    while(piece.x - count >= 0 and piece.y + count < SIZE and board[piece.x - count][piece.y + count] == current):
-        result.positions.append(Position(piece.x - count, piece.y + count))
+    while(piece.x - count >= 0 and piece.y + count < SIZE and board[piece.y + count][piece.x - count] == current):
+        positions.append(Position(piece.x - count, piece.y + count))
         count += 1
 
-    if(piece.x == SIZE - 1 or piece.y == 0 or board[piece.x + 1][piece.y - 1] != ''):
-        result.sides_blocked += 1
-    if(piece.x - count - 1 < 0 or piece.y + count + 1 >= SIZE or board[piece.x - count - 1][piece.y + count + 1] != ''):
-        result.sides_blocked += 1
+    if(piece.x == SIZE - 1 or piece.y == 0 or board[piece.y - 1][piece.x + 1] != ''):
+        sides_blocked += 1
+    if(piece.x - count - 1 < 0 or piece.y + count + 1 >= SIZE or board[piece.y + count + 1][piece.x - count - 1] != ''):
+        sides_blocked += 1
 
-    return result
-
+    return Line(len(positions), sides_blocked, positions)
 
 def get_all_lines(board: List[List[str]], player: str) -> List[Line]:
     # Simon's function
@@ -183,6 +176,7 @@ def get_all_lines(board: List[List[str]], player: str) -> List[Line]:
 
     # First get all pieces of our own's position
     lines: List[Line]
+    tempLine: Line
     pieces: List[Position]
 
     lines = []
@@ -191,29 +185,220 @@ def get_all_lines(board: List[List[str]], player: str) -> List[Line]:
     for i in range(SIZE):
         for j in range(SIZE):
             if board[i][j] == player:
-                pieces.append(Position(i,j))
+                pieces.append(Position(j,i))
 
     # Then, for every single pieces on the board, check if it has a line
     for piece in pieces:
-        # Get the horizontal, vertical, diagonal lines
-        pass
-    pass
+        tempLine = getLineH(piece, board)
+        if tempLine.num_pieces > 1:
+            lines.append(tempLine)
+        tempLine = getLineV(piece, board)
+        if tempLine.num_pieces > 1:
+            lines.append(tempLine)
+        tempLine = getLineD1(piece, board)
+        if tempLine.num_pieces > 1:
+            lines.append(tempLine)
+        tempLine = getLineD2(piece, board)
+        if tempLine.num_pieces > 1:
+            lines.append(tempLine)
+    return lines 
 
-    return []
+# ____________________Simon defined functions for making theall lines____________________
 
 
-# ____________________preexisted functions____________________
+def get_opponent(player: str) -> str:
+    return 'O' if player == 'X' else 'X'
+
+
+def find_extension_spot(line: Line, board: List[List[str]]) -> tuple[int, int] | None:
+    # Try to extend the line in either direction if the spot is empty
+    start = line.positions[0]
+    end = line.positions[-1]
+    dx = end.x - start.x
+    dy = end.y - start.y
+
+    length = len(line.positions)
+    if dx != 0:
+        dx //= length - 1
+    if dy != 0:
+        dy //= length - 1
+
+    # Try before start
+    x1 = start.x - dx
+    y1 = start.y - dy
+    if 0 <= x1 < SIZE and 0 <= y1 < SIZE and board[y1][x1] == '':
+        return (y1, x1)
+
+    # Try after end
+    x2 = end.x + dx
+    y2 = end.y + dy
+    if 0 <= x2 < SIZE and 0 <= y2 < SIZE and board[y2][x2] == '':
+        return (y2, x2)
+
+    return None  # No extension possible
+
+# def find_merging_spot(player_lines: List[Line], board: List[List[str]]) -> tuple[int, int] | None:
+#     for i in range(len(player_lines)):
+#         for j in range(i + 1, len(player_lines)):
+#             line1 = player_lines[i]
+#             line2 = player_lines[j]
+#
+#             # Only consider lines with 2 pieces
+#             if line1.num_pieces + line2.num_pieces != 4:
+#                 continue
+#
+#             # Check if both lines have same direction
+#             dx1 = line1.positions[-1].x - line1.positions[0].x
+#             dy1 = line1.positions[-1].y - line1.positions[0].y
+#             if len(line1.positions) > 1:
+#                 dx1 //= len(line1.positions) - 1
+#                 dy1 //= len(line1.positions) - 1
+#
+#             dx2 = line2.positions[-1].x - line2.positions[0].x
+#             dy2 = line2.positions[-1].y - line2.positions[0].y
+#             if len(line2.positions) > 1:
+#                 dx2 //= len(line2.positions) - 1
+#                 dy2 //= len(line2.positions) - 1
+#
+#             if dx1 != dx2 or dy1 != dy2:
+#                 continue  # Not aligned
+#
+#             # Check distance and intermediate empty spot
+#             ends = [line1.positions[0], line1.positions[-1], line2.positions[0], line2.positions[-1]]
+#             ends.sort(key=lambda p: (p.x, p.y))  # Sort for consistency
+#
+#             # Consider one of the middle gaps
+#             for a in ends:
+#                 for b in ends:
+#                     if a == b:
+#                         continue
+#                     gap_x = (a.x + b.x) // 2
+#                     gap_y = (a.y + b.y) // 2
+#                     if 0 <= gap_x < SIZE and 0 <= gap_y < SIZE and board[gap_y][gap_x] == '':
+#                         # Check if the gap is between the two lines
+#                         if abs(a.x - b.x) <= 4 and abs(a.y - b.y) <= 4:
+#                             return (gap_y, gap_x)
+#     return None
+
+def find_bridge_to_win(board: List[List[str]], player: str) -> tuple[int, int] | None:
+    directions = [(1, 0), (0, 1), (1, 1), (-1, 1)]  # H, V, D1, D2
+
+    for y in range(SIZE):
+        for x in range(SIZE):
+            for dx, dy in directions:
+                positions = [(x + i*dx, y + i*dy) for i in range(5)]
+                if all(0 <= px < SIZE and 0 <= py < SIZE for px, py in positions):
+                    values = [board[py][px] for px, py in positions]
+                    # Match pattern: player, player, player, "", player
+                    if values.count(player) == 4 and values.count('') == 1:
+                        empty_index = values.index('')
+                        empty_pos = positions[empty_index]
+                        # Extra safety: check sides aren't both blocked
+                        before = (x - dx, y - dy)
+                        after = (x + 5*dx, y + 5*dy)
+                        sides_blocked = 0
+                        if 0 <= before[0] < SIZE and 0 <= before[1] < SIZE:
+                            if board[before[1]][before[0]] not in ['', player]:
+                                sides_blocked += 1
+                        else:
+                            sides_blocked += 1
+                        if 0 <= after[0] < SIZE and 0 <= after[1] < SIZE:
+                            if board[after[1]][after[0]] not in ['', player]:
+                                sides_blocked += 1
+                        else:
+                            sides_blocked += 1
+                        if sides_blocked < 2:
+                            return (empty_pos[1], empty_pos[0])  # (row, col)
+    return None
+
 
 def choose_move(board, player):
-    """
-    TODO: Implement your move selection logic.
-    Should return a tuple (row, col) from get_valid_moves(board).
-    """
     valid = get_valid_moves(board)
     if not valid:
         raise Exception("No valid moves available")
-    # Example stub: always pick the first one
+
+    player_lines = get_all_lines(board, player)
+    enemy_lines = get_all_lines(board, get_opponent(player))
+
+    # 1. Win immediately
+    for line in player_lines:
+        if line.num_pieces == 4 and line.sides_blocked <= 1:
+            move = find_extension_spot(line, board)
+            if move:
+                return move
+    
+    # 1.5 Try to merge two lines to form a win
+    bridge = find_bridge_to_win(board, player)
+    if bridge:
+        return bridge
+    # merge_move = find_merging_spot(player_lines, board)
+    # if merge_move:
+    #     return merge_move
+
+    # 2. Block enemy win
+    for line in enemy_lines:
+        if line.num_pieces == 4 and line.sides_blocked <= 1:
+            move = find_extension_spot(line, board)
+            if move:
+                return move
+
+    # 3. Build own lines: Prefer longer lines first
+    for i in range(3, 0, -1):
+        for line in player_lines:
+            if line.num_pieces == i:
+                if line.sides_blocked == 0:
+                    move = find_extension_spot(line, board)
+                    if move:
+                        return move
+        # 4. Block enemy lines of size i with no side blocked
+        for line in enemy_lines:
+            if line.num_pieces == i and line.sides_blocked == 0:
+                move = find_extension_spot(line, board)
+                if move:
+                    return move
+        
+        # 5. Extend player lines of size i with one side blocked
+        for line in player_lines:
+            if line.num_pieces == i:
+                if line.sides_blocked == 1:
+                    move = find_extension_spot(line, board)
+                    if move:
+                        return move
+
+        # 6. Block enemy lines of size i with one side blocked
+        for line in enemy_lines:
+            if line.num_pieces == i and line.sides_blocked == 1:
+                move = find_extension_spot(line, board)
+                if move:
+                    return move
+        
+
+    # 7. Fallback: Prefer move closest to the center
+    center = SIZE // 2
+    valid.sort(key=lambda move: abs(move[0] - center) + abs(move[1] - center))
     return valid[0]
+
+# ____________________preexisted functions____________________
+# def choose_move(board, player):
+#     """
+#     TODO: Implement your move selection logic.
+#     Should return a tuple (row, col) from get_valid_moves(board).
+#     """
+#     valid = get_valid_moves(board)
+#     if not valid:
+#         raise Exception("No valid moves available")
+#
+#     player_lines = get_all_lines(board, player)
+#     if player == 'X':
+#         enemy_lines = get_all_lines(board, 'O')
+#     else:
+#         enemy_lines = get_all_lines(board, 'X')
+#
+#     # add more stuffs
+#
+#
+#     # Example stub: always pick the first one
+#     return valid[0]
 
 def main():
     if len(sys.argv) != 2:
